@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
                     sp_words.setVisibility(View.VISIBLE);
                     vv_video_learn.start();
                     vv_record.setVisibility(View.GONE);
+                    sp_words.setEnabled(true);
+                    practiceMode = false;
                     timeStarted = System.currentTimeMillis();
                 } else if (checkedId == rb_practice.getId()) {
                     Toast.makeText(getApplicationContext(),"Practice",Toast.LENGTH_SHORT).show();
@@ -336,7 +338,6 @@ public class MainActivity extends AppCompatActivity {
                 bt_record.setVisibility(View.GONE);
                 btProceed.setVisibility(View.VISIBLE);
                 bt_cancel.setVisibility(View.VISIBLE);
-                sp_words.setEnabled(false);
                 //rb_practice.setEnabled(false);
                 vv_record.setVideoURI(Uri.parse(returnedURI));
                 int try_number = sharedPreferences.getInt("record_"+sp_words.getSelectedItem().toString(),0);
@@ -370,7 +371,8 @@ public class MainActivity extends AppCompatActivity {
             // Okay, so user rejected. now show him a different video
             vv_record.setVisibility(View.GONE);
             bt_record.setVisibility(View.VISIBLE);
-            ll_after_record.setVisibility(View.GONE);
+            bt_cancel.setVisibility(View.GONE);
+            btProceed.setVisibility(View.GONE);
             chosenWord = spinnerWordsArray[new Random().nextInt(spinnerWordsArray.length)];
             tv_word_to_practice.setText(chosenWord);
         }
