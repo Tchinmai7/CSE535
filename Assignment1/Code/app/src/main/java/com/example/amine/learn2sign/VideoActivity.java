@@ -88,12 +88,12 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback {
             public void onFinish() {
                 mMediaRecorder.stop();
                 mMediaRecorder.reset();
-                if(time!=null) {
+                if (time != null) {
                     time.cancel();
                 }
                 returnIntent.putExtra(INTENT_URI,returnfile);
                 returnIntent.putExtra(INTENT_TIME_WATCHED_VIDEO , time_watched);
-                activity.setResult(8888,returnIntent);
+                activity.setResult(Constants.RETURN_VIDEO_ACTIVITY_SUCCESS, returnIntent);
                 activity.finish();
             }
         };
@@ -128,7 +128,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback {
                     returnIntent.putExtra(INTENT_URI,returnfile);
                     returnIntent.putExtra(INTENT_TIME_WATCHED_VIDEO , time_watched);
 
-                    activity.setResult(8888,returnIntent);
+                    activity.setResult(Constants.RETURN_VIDEO_ACTIVITY_SUCCESS, returnIntent);
                     activity.finish();
 
                 }
@@ -158,7 +158,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback {
         mMediaRecorder.setCamera(mCamera);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-        int i=0;
+        int i = 0;
         SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss", Locale.US);
         String format = s.format(new Date());
         File file = new File(Environment.getExternalStorageDirectory().getPath() + "/Learn2Sign/"
@@ -192,7 +192,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback {
                     }
                     returnIntent.putExtra(INTENT_URI,returnfile);
                     returnIntent.putExtra(INTENT_TIME_WATCHED_VIDEO , time_watched);
-                    activity.setResult(8888,returnIntent);
+                    activity.setResult(Constants.RETURN_VIDEO_ACTIVITY_SUCCESS, returnIntent);
                     activity.finish();
                 }
 
@@ -231,7 +231,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback {
 
         returnIntent.putExtra(INTENT_URI,returnfile);
         returnIntent.putExtra(INTENT_TIME_WATCHED_VIDEO , time_watched);
-        activity.setResult(7777,returnIntent);
+        activity.setResult(Constants.RETURN_VIDEO_ACTIVITY_ABORT, returnIntent);
         activity.finish();
 
         super.onBackPressed();
@@ -275,7 +275,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback {
         mMediaRecorder = null;
         returnIntent.putExtra(INTENT_URI,returnfile);
         returnIntent.putExtra(INTENT_TIME_WATCHED_VIDEO , time_watched);
-        activity.setResult(7777,returnIntent);
+        activity.setResult(Constants.RETURN_VIDEO_ACTIVITY_ABORT, returnIntent);
         mCamera = null;
         timer.cancel();
         finish();

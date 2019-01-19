@@ -60,9 +60,6 @@ import static com.example.amine.learn2sign.LoginActivity.INTENT_WORD;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    static final int REQUEST_VIDEO_CAPTURE = 1;
-
     @BindView(R.id.rg_practice_learn)
     RadioGroup rg_practice_learn;
 
@@ -103,6 +100,13 @@ public class MainActivity extends AppCompatActivity {
     long time_started = 0;
     long time_started_return = 0;
     Activity mainActivity;
+
+    int PERMISSION_ALL = 1;
+
+    String[] PERMISSIONS = {
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.CAMERA
+    };
 
 
     @Override
@@ -160,17 +164,18 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                if(mediaPlayer!=null)
+                if (mediaPlayer != null)
                 {
                     mediaPlayer.start();
-
                 }
 
              }
         };
+
         vv_record.setOnCompletionListener(onCompletionListener);
         vv_video_learn.setOnCompletionListener(onCompletionListener);
         vv_record.setOnClickListener(new View.OnClickListener() {
@@ -182,13 +187,13 @@ public class MainActivity extends AppCompatActivity {
         vv_video_learn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!vv_video_learn.isPlaying()) {
+                if (!vv_video_learn.isPlaying()) {
                     vv_video_learn.start();
                 }
             }
         });
         time_started = System.currentTimeMillis();
-        sharedPreferences =  this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+        sharedPreferences = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
         Intent intent = getIntent();
         if(intent.hasExtra(INTENT_EMAIL) && intent.hasExtra(INTENT_ID)) {
             Toast.makeText(this,"User : " + intent.getStringExtra(INTENT_EMAIL),Toast.LENGTH_SHORT).show();
@@ -278,59 +283,10 @@ public class MainActivity extends AppCompatActivity {
     }
     @OnClick(R.id.bt_record)
     public void record_video() {
-
-
-
-         if( ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED ) {
-
-             // Permission is not granted
-             // Should we show an explanation?
-
-             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                     Manifest.permission.CAMERA)) {
-                 // Show an explanation to the user *asynchronously* -- don't block
-                 // this thread waiting for the user's response! After the user
-                 // sees the explanation, try again to request the permission.
-             } else {
-                 // No explanation needed; request the permission
-                 ActivityCompat.requestPermissions(this,
-                         new String[]{Manifest.permission.CAMERA},
-                         101);
-
-                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                 // app-defined int constant. The callback method gets the
-                 // result of the request.
-             }
-         }
-
-
-         if ( ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED ) {
-
-            // Permission is not granted
-            // Should we show an explanation?
-
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        100);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-
-        } else {
+        if(!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+        else {
             // Permission has already been granted
              File f = new File(Environment.getExternalStorageDirectory(), "Learn2Sign");
 
@@ -343,33 +299,27 @@ public class MainActivity extends AppCompatActivity {
              Intent t = new Intent(this,VideoActivity.class);
              t.putExtra(INTENT_WORD,sp_words.getSelectedItem().toString());
              t.putExtra(INTENT_TIME_WATCHED, time_started);
-             startActivityForResult(t,9999);
+             startActivityForResult(t,Constants.REQUEST_VIDEO_CAPTURE);
+        }
+    }
 
 
-
-
-
- /*           File m = new File(Environment.getExternalStorageDirectory().getPath() + "/Learn2Sign");
-            if(!m.exists()) {
-                if(m.mkdir()) {
-                    Toast.makeText(this,"Directory Created",Toast.LENGTH_SHORT).show();
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
                 }
             }
-
-            Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            takeVideoIntent.putExtra(EXTRA_DURATION_LIMIT, 10);
-
-            if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-            }*/
         }
+        return true;
     }
 
     @OnClick(R.id.bt_send)
     public void sendToServer() {
         Toast.makeText(this,"Send to Server",Toast.LENGTH_SHORT).show();
         Intent t = new Intent(this,UploadActivity.class);
-        startActivityForResult(t,2000);
+        startActivityForResult(t, Constants.REQUEST_CODE_UPLOAD);
     }
 
     @OnClick(R.id.bt_cancel)
@@ -396,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
     Log.e("OnActivityresult",requestCode+" "+resultCode);
-        if(requestCode==2000 ) {
+        if(requestCode == Constants.REQUEST_CODE_UPLOAD ) {
             //from video activity
             vv_record.setVisibility(View.GONE);
             rb_learn.setChecked(true);
@@ -407,10 +357,8 @@ public class MainActivity extends AppCompatActivity {
             rb_learn.setEnabled(true);
             //rb_practice.setEnabled(true);
             sp_ip_address.setEnabled(true);
-
-
         }
-        if(requestCode==9999 && resultCode == 8888) {
+        if(requestCode == Constants.REQUEST_VIDEO_CAPTURE && resultCode == Constants.RETURN_VIDEO_ACTIVITY_SUCCESS) {
             if(intent.hasExtra(INTENT_URI) && intent.hasExtra(INTENT_TIME_WATCHED_VIDEO)) {
                 returnedURI = intent.getStringExtra(INTENT_URI);
                 time_started_return = intent.getLongExtra(INTENT_TIME_WATCHED_VIDEO,0);
@@ -430,66 +378,26 @@ public class MainActivity extends AppCompatActivity {
                 set.add(toAdd);
                 sharedPreferences.edit().putStringSet("RECORDED",set).apply();
                 sharedPreferences.edit().putInt("record_"+sp_words.getSelectedItem().toString(), try_number).apply();
-
+                vv_record.start();
                 vv_video_learn.start();
             }
 
         }
 
-        if(requestCode==9999 && resultCode==7777)
+        if (requestCode == Constants.REQUEST_VIDEO_CAPTURE && resultCode == Constants.RETURN_VIDEO_ACTIVITY_ABORT)
         {
-            if(intent!=null) {
+            if (intent != null) {
                 //create folder
                 if(intent.hasExtra(INTENT_URI) && intent.hasExtra(INTENT_TIME_WATCHED_VIDEO)) {
                     returnedURI = intent.getStringExtra(INTENT_URI);
                     time_started_return = intent.getLongExtra(INTENT_TIME_WATCHED_VIDEO,0);
                     File f = new File(returnedURI);
                     f.delete();
-                  //  int try_number = sharedPreferences.getInt("record_"+sp_words.getSelectedItem().toString(),0);
-                   // try_number++;
-                    //String toAdd  = sp_words.getSelectedItem().toString()+"_"+try_number+"_"+time_started_return + "_cancelled";
-                    //HashSet<String> set = (HashSet<String>) sharedPreferences.getStringSet("RECORDED",new HashSet<String>());
-                   // set.add(toAdd);
-                  //  sharedPreferences.edit().putStringSet("RECORDED",set).apply();
-                 //   sharedPreferences.edit().putInt("record_"+sp_words.getSelectedItem().toString(), try_number).apply();
-
-
-
-
                     time_started = System.currentTimeMillis();
                     vv_video_learn.start();
                 }
             }
-
         }
-
-        /*if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
-            final Uri videoUri = intent.getData();
-
-
-            vv_record.setVisibility(View.VISIBLE);
-            vv_record.setVideoURI(videoUri);
-            vv_record.start();
-            play_video(sp_words.getSelectedItem().toString());
-            bt_record.setVisibility(View.GONE);
-            int i=0;
-            File n = new File(Environment.getExternalStorageDirectory().getPath() + "/Learn2Sign/"
-                    + sharedPreferences.getString(INTENT_ID,"0000")+"_"+sp_words.getSelectedItem().toString()+"_0" + ".mp4");
-            while(n.exists()) {
-                i++;
-                n = new File(Environment.getExternalStorageDirectory().getPath() + "/Learn2Sign/"
-                        + sharedPreferences.getString(INTENT_ID,"0000")+"_"+sp_words.getSelectedItem().toString()+"_"+i + ".mp4");
-            }
-            SaveFile saveFile = new SaveFile();
-            saveFile.execute(n.getPath(),videoUri.toString());
-
-            bt_send.setVisibility(View.VISIBLE);
-            bt_cancel.setVisibility(View.VISIBLE);
-
-            sp_words.setEnabled(false);
-            rb_learn.setEnabled(false);
-            rb_practice.setEnabled(false);
-        }*/
     }
 
     //Menu Item for logging out

@@ -34,8 +34,6 @@
         <item>Tiger</item>
     </string-array>
     <string name="title_activity_login">LoginActivity</string>
-
-
     <string name="login">Login</string>
     <string name="logout">Logout</string>
     <string name="gotoupload">GotoUpload</string>

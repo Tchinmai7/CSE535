@@ -75,15 +75,14 @@ public class UploadActivity extends AppCompatActivity {
         }
         uploadListAdapter = new UploadListAdapter(m.listFiles(), this.getApplicationContext());
         rv_videos.setAdapter(uploadListAdapter);
-
-
     }
-    public boolean onCreateOptionsMenu(Menu menu) {
 
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_upload, menu);
         return true;
     }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         String id = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE).getString(INTENT_ID,"00000000");
 
@@ -173,13 +172,11 @@ public class UploadActivity extends AppCompatActivity {
                         uploadFile.execute(uploadListAdapter.getVideos()[i].getPath());*/
 
                 }
-
-
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
+
     public void upload_log_file() {
         upload_number = 0;
         Toast.makeText(this,"Upload to Server", Toast.LENGTH_LONG).show();
@@ -213,8 +210,6 @@ public class UploadActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 }
 
