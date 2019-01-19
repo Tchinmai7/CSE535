@@ -372,6 +372,7 @@ public class MainActivity extends AppCompatActivity {
             bt_record.setVisibility(View.VISIBLE);
             ll_after_record.setVisibility(View.GONE);
             chosenWord = spinnerWordsArray[new Random().nextInt(spinnerWordsArray.length)];
+            tv_word_to_practice.setText(chosenWord);
         }
 
     }
