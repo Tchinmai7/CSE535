@@ -1,8 +1,6 @@
 package com.example.amine.learn2sign;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,9 +10,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -39,17 +36,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.internal.Utils;
 
-import static android.provider.MediaStore.EXTRA_DURATION_LIMIT;
-import static android.provider.MediaStore.EXTRA_MEDIA_TITLE;
 import static com.example.amine.learn2sign.LoginActivity.INTENT_EMAIL;
 import static com.example.amine.learn2sign.LoginActivity.INTENT_ID;
 import static com.example.amine.learn2sign.LoginActivity.INTENT_SERVER_ADDRESS;
@@ -93,13 +86,19 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.ll_after_record)
     LinearLayout ll_after_record;
 
+    @BindView(R.id.tv_word_to_practice)
+    TextView tv_word_to_practice;
+
     String path;
     String returnedURI;
-    String old_text = "";
+    String oldText = "";
+    String chosenWord = "";
+    String[] spinnerWordsArray;
     SharedPreferences sharedPreferences;
-    long time_started = 0;
-    long time_started_return = 0;
+    long timeStarted = 0;
+    long timeStartedReturn = 0;
     Activity mainActivity;
+
 
     int PERMISSION_ALL = 1;
 
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         //bind xml to activity
         ButterKnife.bind(this);
         Stetho.initializeWithDefaults(this);
-
+        spinnerWordsArray = getResources().getStringArray(R.array.spinner_words);
         rb_learn.setChecked(true);
         bt_cancel.setVisibility(View.GONE);
         bt_send.setVisibility(View.GONE);
@@ -125,14 +124,21 @@ public class MainActivity extends AppCompatActivity {
         {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(checkedId==rb_learn.getId()) {
+                if (checkedId == rb_learn.getId()) {
                     Toast.makeText(getApplicationContext(),"Learn",Toast.LENGTH_SHORT).show();
                     vv_video_learn.setVisibility(View.VISIBLE);
+                    tv_word_to_practice.setVisibility(View.GONE);
+                    sp_words.setVisibility(View.VISIBLE);
                     vv_video_learn.start();
-                    time_started = System.currentTimeMillis();
-                } else if ( checkedId==rb_practice.getId()) {
+                    timeStarted = System.currentTimeMillis();
+                } else if (checkedId == rb_practice.getId()) {
                     Toast.makeText(getApplicationContext(),"Practice",Toast.LENGTH_SHORT).show();
                     vv_video_learn.setVisibility(View.GONE);
+                    sp_words.setVisibility(View.GONE);
+                    tv_word_to_practice.setVisibility(View.VISIBLE);
+                    chosenWord = spinnerWordsArray[new Random().nextInt(spinnerWordsArray.length)];
+                    tv_word_to_practice.setText(chosenWord);
+                    timeStarted = System.currentTimeMillis();
                 }
             }
         });
@@ -141,9 +147,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String text = sp_words.getSelectedItem().toString();
-                if(!old_text.equals(text)) {
+                if(!oldText.equals(text)) {
                     path = "";
-                    time_started = System.currentTimeMillis();
+                    timeStarted = System.currentTimeMillis();
                     play_video(text);
                 }
             }
@@ -192,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        time_started = System.currentTimeMillis();
+        timeStarted = System.currentTimeMillis();
         sharedPreferences = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
         Intent intent = getIntent();
         if(intent.hasExtra(INTENT_EMAIL) && intent.hasExtra(INTENT_ID)) {
@@ -215,13 +221,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
 
         vv_video_learn.start();
-        time_started = System.currentTimeMillis();
+        timeStarted = System.currentTimeMillis();
         super.onResume();
 
     }
 
     public void play_video(String text) {
-        old_text = text;
+        oldText = text;
         if(text.equals("About")) {
 
              path = "android.resource://" + getPackageName() + "/" + R.raw._about;
@@ -229,52 +235,52 @@ public class MainActivity extends AppCompatActivity {
             path = "android.resource://" + getPackageName() + "/" + R.raw._and;
         } else if (text.equals("Can")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._can;
-        }else if (text.equals("Cat")) {
+        } else if (text.equals("Cat")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._cat;
-        }else if (text.equals("Cop")) {
+        } else if (text.equals("Cop")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._cop;
-        }else if (text.equals("Cost")) {
+        } else if (text.equals("Cost")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._cost;
-        }else if (text.equals("Day")) {
+        } else if (text.equals("Day")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._day;
-        }else if (text.equals("Deaf")) {
+        } else if (text.equals("Deaf")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._deaf;
-        }else if (text.equals("Decide")) {
+        } else if (text.equals("Decide")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._decide;
-        }else if (text.equals("Father")) {
+        } else if (text.equals("Father")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._father;
-        }else if (text.equals("Find")) {
+        } else if (text.equals("Find")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._find;
-        }else if (text.equals("Go Out")) {
+        } else if (text.equals("Go Out")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._go_out;
-        }else if (text.equals("Gold")) {
+        } else if (text.equals("Gold")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._gold;
-        }else if (text.equals("Goodnight")) {
+        } else if (text.equals("Goodnight")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._good_night;
-        }else if (text.equals("Hearing")) {
+        } else if (text.equals("Hearing")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._hearing;
-        }else if (text.equals("Here")) {
+        } else if (text.equals("Here")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._here;
-        }else if (text.equals("Hospital")) {
+        } else if (text.equals("Hospital")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._hospital;
-        }else if (text.equals("Hurt")) {
+        } else if (text.equals("Hurt")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._hurt;
-        }else if (text.equals("If")) {
+        } else if (text.equals("If")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._if;
-        }else if (text.equals("Large")) {
+        } else if (text.equals("Large")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._large;
-        }else if (text.equals("Hello")) {
+        } else if (text.equals("Hello")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._hello;
-        }else if (text.equals("Help")) {
+        } else if (text.equals("Help")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._help;
-        }else if (text.equals("Sorry")) {
+        } else if (text.equals("Sorry")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._sorry;
-        }else if (text.equals("After")) {
+        } else if (text.equals("After")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._after;
-        }else if (text.equals("Tiger")) {
+        } else if (text.equals("Tiger")) {
             path = "android.resource://" + getPackageName() + "/" + R.raw._tiger;
         }
-        if(!path.isEmpty()) {
+        if (!path.isEmpty()) {
             Uri uri = Uri.parse(path);
             vv_video_learn.setVideoURI(uri);
             vv_video_learn.start();
@@ -294,11 +300,11 @@ public class MainActivity extends AppCompatActivity {
                  f.mkdirs();
              }
 
-             time_started = System.currentTimeMillis() - time_started;
+             timeStarted = System.currentTimeMillis() - timeStarted;
 
              Intent t = new Intent(this,VideoActivity.class);
              t.putExtra(INTENT_WORD,sp_words.getSelectedItem().toString());
-             t.putExtra(INTENT_TIME_WATCHED, time_started);
+             t.putExtra(INTENT_TIME_WATCHED, timeStarted);
              startActivityForResult(t,Constants.REQUEST_VIDEO_CAPTURE);
         }
     }
@@ -336,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
 
         rb_learn.setEnabled(true);
         //rb_practice.setEnabled(true);
-        time_started = System.currentTimeMillis();
+        timeStarted = System.currentTimeMillis();
 
 
     }
@@ -361,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == Constants.REQUEST_VIDEO_CAPTURE && resultCode == Constants.RETURN_VIDEO_ACTIVITY_SUCCESS) {
             if(intent.hasExtra(INTENT_URI) && intent.hasExtra(INTENT_TIME_WATCHED_VIDEO)) {
                 returnedURI = intent.getStringExtra(INTENT_URI);
-                time_started_return = intent.getLongExtra(INTENT_TIME_WATCHED_VIDEO,0);
+                timeStartedReturn = intent.getLongExtra(INTENT_TIME_WATCHED_VIDEO,0);
 
                 vv_record.setVisibility(View.VISIBLE);
                 bt_record.setVisibility(View.GONE);
@@ -373,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
                 vv_record.setVideoURI(Uri.parse(returnedURI));
                 int try_number = sharedPreferences.getInt("record_"+sp_words.getSelectedItem().toString(),0);
                 try_number++;
-                String toAdd  = sp_words.getSelectedItem().toString()+"_"+try_number+"_"+time_started_return + "";
+                String toAdd  = sp_words.getSelectedItem().toString()+"_"+try_number+"_"+ timeStartedReturn + "";
                 HashSet<String> set = (HashSet<String>) sharedPreferences.getStringSet("RECORDED",new HashSet<String>());
                 set.add(toAdd);
                 sharedPreferences.edit().putStringSet("RECORDED",set).apply();
@@ -390,10 +396,10 @@ public class MainActivity extends AppCompatActivity {
                 //create folder
                 if(intent.hasExtra(INTENT_URI) && intent.hasExtra(INTENT_TIME_WATCHED_VIDEO)) {
                     returnedURI = intent.getStringExtra(INTENT_URI);
-                    time_started_return = intent.getLongExtra(INTENT_TIME_WATCHED_VIDEO,0);
+                    timeStartedReturn = intent.getLongExtra(INTENT_TIME_WATCHED_VIDEO,0);
                     File f = new File(returnedURI);
                     f.delete();
-                    time_started = System.currentTimeMillis();
+                    timeStarted = System.currentTimeMillis();
                     vv_video_learn.start();
                 }
             }

@@ -32,7 +32,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:visibility="gone"
                 android:layout_marginLeft="30dp"
                 android:text="Practice"
                 android:textSize="20sp" />
@@ -48,8 +47,14 @@
             android:entries="@array/spinner_words"
             android:prompt="@string/choose_a_word">
 
-
         </Spinner>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_word_to_practice"
+            android:layout_margin="10dp"
+            android:textSize="20sp"
+            android:visibility="gone" />
 
         <Spinner
             android:id="@+id/sp_ip_address"
