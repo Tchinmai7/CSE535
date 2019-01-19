@@ -60,7 +60,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback {
         setContentView(R.layout.activity_video);
         activity = this;
         returnIntent = new Intent();
-        // we shall take the video in landscape orientation
+        // we shall take the video in portrait orientation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
         if(getIntent().hasExtra(INTENT_WORD)) {
             word = getIntent().getStringExtra(INTENT_WORD);
@@ -187,7 +187,7 @@ public class VideoActivity extends Activity implements SurfaceHolder.Callback {
                 if (i == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {    //finish after max duration has been reached
                     mMediaRecorder.stop();
                     mMediaRecorder.reset();
-                    if(time!=null) {
+                    if (time != null) {
                         time.cancel();
                     }
                     returnIntent.putExtra(INTENT_URI,returnfile);

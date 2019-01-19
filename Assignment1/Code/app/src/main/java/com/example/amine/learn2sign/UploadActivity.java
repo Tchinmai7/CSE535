@@ -68,8 +68,8 @@ public class UploadActivity extends AppCompatActivity {
         if(m.exists()) {
             if(m.isDirectory()) {
                 File[] videos =  m.listFiles();
-                for(int i=0;i<videos.length;i++) {
-                    Log.d("msg",videos[i].getPath());
+                for (int i = 0; i < videos.length; i++) {
+                    Log.d("msg", videos[i].getPath());
                 }
             }
         }

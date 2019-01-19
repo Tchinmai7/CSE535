@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.bt_record)
     Button bt_record;
 
-    @BindView(R.id.bt_send)
-    Button bt_send;
+    @BindView(R.id.bt_proceed)
+    Button btProceed;
 
     @BindView(R.id.bt_cancel)
     Button bt_cancel;
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     long timeStarted = 0;
     long timeStartedReturn = 0;
     Activity mainActivity;
-
+    boolean practiceMode = false;
 
     int PERMISSION_ALL = 1;
 
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         spinnerWordsArray = getResources().getStringArray(R.array.spinner_words);
         rb_learn.setChecked(true);
         bt_cancel.setVisibility(View.GONE);
-        bt_send.setVisibility(View.GONE);
+        btProceed.setVisibility(View.GONE);
         rg_practice_learn.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     tv_word_to_practice.setVisibility(View.VISIBLE);
                     chosenWord = spinnerWordsArray[new Random().nextInt(spinnerWordsArray.length)];
                     tv_word_to_practice.setText(chosenWord);
+                    practiceMode = true;
                     timeStarted = System.currentTimeMillis();
                 }
             }
@@ -228,65 +229,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void play_video(String text) {
         oldText = text;
-        if(text.equals("About")) {
-
-             path = "android.resource://" + getPackageName() + "/" + R.raw._about;
-        } else if(text.equals("And")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._and;
-        } else if (text.equals("Can")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._can;
-        } else if (text.equals("Cat")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._cat;
-        } else if (text.equals("Cop")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._cop;
-        } else if (text.equals("Cost")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._cost;
-        } else if (text.equals("Day")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._day;
-        } else if (text.equals("Deaf")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._deaf;
-        } else if (text.equals("Decide")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._decide;
-        } else if (text.equals("Father")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._father;
-        } else if (text.equals("Find")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._find;
-        } else if (text.equals("Go Out")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._go_out;
-        } else if (text.equals("Gold")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._gold;
-        } else if (text.equals("Goodnight")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._good_night;
-        } else if (text.equals("Hearing")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._hearing;
-        } else if (text.equals("Here")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._here;
-        } else if (text.equals("Hospital")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._hospital;
-        } else if (text.equals("Hurt")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._hurt;
-        } else if (text.equals("If")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._if;
-        } else if (text.equals("Large")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._large;
-        } else if (text.equals("Hello")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._hello;
-        } else if (text.equals("Help")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._help;
-        } else if (text.equals("Sorry")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._sorry;
-        } else if (text.equals("After")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._after;
-        } else if (text.equals("Tiger")) {
-            path = "android.resource://" + getPackageName() + "/" + R.raw._tiger;
-        }
+        path = Constants.getFilePath(text, getPackageName());
         if (!path.isEmpty()) {
             Uri uri = Uri.parse(path);
             vv_video_learn.setVideoURI(uri);
             vv_video_learn.start();
         }
-
     }
+
     @OnClick(R.id.bt_record)
     public void record_video() {
         if(!hasPermissions(this, PERMISSIONS)){
@@ -303,9 +253,9 @@ public class MainActivity extends AppCompatActivity {
              timeStarted = System.currentTimeMillis() - timeStarted;
 
              Intent t = new Intent(this,VideoActivity.class);
-             t.putExtra(INTENT_WORD,sp_words.getSelectedItem().toString());
+             t.putExtra(INTENT_WORD, sp_words.getSelectedItem().toString());
              t.putExtra(INTENT_TIME_WATCHED, timeStarted);
-             startActivityForResult(t,Constants.REQUEST_VIDEO_CAPTURE);
+             startActivityForResult(t, Constants.REQUEST_VIDEO_CAPTURE);
         }
     }
 
@@ -321,11 +271,20 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @OnClick(R.id.bt_send)
+    @OnClick(R.id.bt_proceed)
     public void sendToServer() {
-        Toast.makeText(this,"Send to Server",Toast.LENGTH_SHORT).show();
-        Intent t = new Intent(this,UploadActivity.class);
-        startActivityForResult(t, Constants.REQUEST_CODE_UPLOAD);
+        if (!practiceMode) {
+            Toast.makeText(this,"Send to Server",Toast.LENGTH_SHORT).show();
+            Intent t = new Intent(this, UploadActivity.class);
+            startActivityForResult(t, Constants.REQUEST_CODE_UPLOAD);
+        } else {
+            // Its in Practice Mode, so now we need to goto practice activity, and show both
+            Toast.makeText(this, "Show confirmation screen", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, PracticeActivity.class);
+            intent.putExtra("Sign", chosenWord);
+            intent.putExtra("UserVideo", returnedURI);
+            startActivity(intent);
+        }
     }
 
     @OnClick(R.id.bt_cancel)
@@ -335,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
             vv_video_learn.setVisibility(View.VISIBLE);
         }
         bt_record.setVisibility(View.VISIBLE);
-        bt_send.setVisibility(View.GONE);
+        btProceed.setVisibility(View.GONE);
         bt_cancel.setVisibility(View.GONE);
 
         sp_words.setEnabled(true);
@@ -350,31 +309,29 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-
-    Log.e("OnActivityresult",requestCode+" "+resultCode);
-        if(requestCode == Constants.REQUEST_CODE_UPLOAD ) {
+        Log.e("OnActivityresult",requestCode+" "+resultCode);
+        if (requestCode == Constants.REQUEST_CODE_UPLOAD) {
             //from video activity
             vv_record.setVisibility(View.GONE);
             rb_learn.setChecked(true);
             bt_cancel.setVisibility(View.GONE);
-            bt_send.setVisibility(View.GONE);
+            btProceed.setVisibility(View.GONE);
             bt_record.setVisibility(View.VISIBLE);
             sp_words.setEnabled(true);
             rb_learn.setEnabled(true);
             //rb_practice.setEnabled(true);
             sp_ip_address.setEnabled(true);
         }
-        if(requestCode == Constants.REQUEST_VIDEO_CAPTURE && resultCode == Constants.RETURN_VIDEO_ACTIVITY_SUCCESS) {
-            if(intent.hasExtra(INTENT_URI) && intent.hasExtra(INTENT_TIME_WATCHED_VIDEO)) {
+
+        if (requestCode == Constants.REQUEST_VIDEO_CAPTURE && resultCode == Constants.RETURN_VIDEO_ACTIVITY_SUCCESS) {
+            if (intent.hasExtra(INTENT_URI) && intent.hasExtra(INTENT_TIME_WATCHED_VIDEO)) {
                 returnedURI = intent.getStringExtra(INTENT_URI);
                 timeStartedReturn = intent.getLongExtra(INTENT_TIME_WATCHED_VIDEO,0);
-
                 vv_record.setVisibility(View.VISIBLE);
                 bt_record.setVisibility(View.GONE);
-                bt_send.setVisibility(View.VISIBLE);
+                btProceed.setVisibility(View.VISIBLE);
                 bt_cancel.setVisibility(View.VISIBLE);
                 sp_words.setEnabled(false);
-                rb_learn.setEnabled(false);
                 //rb_practice.setEnabled(false);
                 vv_record.setVideoURI(Uri.parse(returnedURI));
                 int try_number = sharedPreferences.getInt("record_"+sp_words.getSelectedItem().toString(),0);
@@ -447,9 +404,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     alertDialog.show();
-
-
-
                     return true;
             case R.id.menu_upload_server:
                 sharedPreferences.edit().putInt(getString(R.string.gotoupload), sharedPreferences.getInt(getString(R.string.gotoupload),0)+1).apply();
@@ -488,7 +442,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             return null;
-
         }
 
 
