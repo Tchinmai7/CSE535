@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ public class PracticeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_practice);
         ButterKnife.bind(this);
         Intent callingIntent = getIntent();
+        Log.e("Word", callingIntent.getStringExtra("Sign"));
         String path = Constants.getFilePath(callingIntent.getStringExtra("Sign"), getPackageName());
         vvUserVideo.setOnCompletionListener(onCompletionListener);
         vvOriginalVideo.setOnCompletionListener(onCompletionListener);

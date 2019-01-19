@@ -19,7 +19,7 @@
         android:layout_margin="20dp"
         android:layout_below="@+id/vv_user_video" />
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/vv_original_video"
         style = "?android:attr/buttonBarStyle">
@@ -29,14 +29,16 @@
             android:layout_width = "0dp"
             android:layout_height="wrap_content"
             android:id="@+id/bt_reject_video"
+            android:textColor="@android:color/holo_red_light"
             android:text="@string/buttonReject"
-            style = "?android:attr/buttonBarButtonStyle" />
+            style = "@style/Widget.AppCompat.Button.Borderless.Colored" />
         <Button
             android:layout_weight="1"
             android:layout_width = "0dp"
             android:layout_height="wrap_content"
             android:id="@+id/bt_accept_video"
-            style = "?android:attr/buttonBarButtonStyle"
+            android:textColor="@android:color/holo_green_dark"
+            style = "@style/Widget.AppCompat.Button.Borderless.Colored"
             android:text="@string/buttonAccept"/>
 
     </LinearLayout>
