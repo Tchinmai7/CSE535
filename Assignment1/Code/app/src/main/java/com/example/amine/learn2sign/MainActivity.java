@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     tv_word_to_practice.setVisibility(View.GONE);
                     sp_words.setVisibility(View.VISIBLE);
                     vv_video_learn.start();
+                    vv_record.setVisibility(View.GONE);
                     timeStarted = System.currentTimeMillis();
                 } else if (checkedId == rb_practice.getId()) {
                     Toast.makeText(getApplicationContext(),"Practice",Toast.LENGTH_SHORT).show();
@@ -221,7 +222,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
 
-        vv_video_learn.start();
+        if (vv_video_learn.getVisibility() == View.VISIBLE) {
+            vv_video_learn.start();
+        }
+        if (vv_record.getVisibility() == View.VISIBLE) {
+            vv_record.start();
+        }
         timeStarted = System.currentTimeMillis();
         super.onResume();
 
@@ -279,11 +285,10 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(t, Constants.REQUEST_CODE_UPLOAD);
         } else {
             // Its in Practice Mode, so now we need to goto practice activity, and show both
-            Toast.makeText(this, "Show confirmation screen", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, PracticeActivity.class);
             intent.putExtra("Sign", chosenWord);
             intent.putExtra("UserVideo", returnedURI);
-            startActivity(intent);
+            startActivityForResult(intent, Constants.REQUEST_SHOW_VIDEO);
         }
     }
 
@@ -347,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        if (requestCode == Constants.REQUEST_VIDEO_CAPTURE && resultCode == Constants.RETURN_VIDEO_ACTIVITY_ABORT)
+        if (requestCode == Constants.REQUEST_VIDEO_CAPTURE && resultCode == Constants.RETURN_VIDEO_ACTIVITY_ABORT )
         {
             if (intent != null) {
                 //create folder
@@ -361,6 +366,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+        if (requestCode == Constants.REQUEST_SHOW_VIDEO && resultCode == Constants.VIDEO_REJECTED) {
+            // Okay, so user rejected. now show him a different video
+            vv_record.setVisibility(View.GONE);
+            bt_record.setVisibility(View.VISIBLE);
+            ll_after_record.setVisibility(View.GONE);
+            chosenWord = spinnerWordsArray[new Random().nextInt(spinnerWordsArray.length)];
+        }
+
     }
 
     //Menu Item for logging out

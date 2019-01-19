@@ -1,10 +1,13 @@
 package com.example.amine.learn2sign;
 
 public class Constants {
-    static final int REQUEST_VIDEO_CAPTURE = 9999;
-    static final int REQUEST_CODE_UPLOAD = 2000;
-    static final int RETURN_VIDEO_ACTIVITY_ABORT = 7777;
-    static final int RETURN_VIDEO_ACTIVITY_SUCCESS = 8888;
+    static final int REQUEST_VIDEO_CAPTURE = 1111;
+    static final int REQUEST_CODE_UPLOAD = 2222;
+    static final int RETURN_VIDEO_ACTIVITY_ABORT = 3333;
+    static final int RETURN_VIDEO_ACTIVITY_SUCCESS = 4444;
+    static final int VIDEO_REJECTED = 5555;
+    static final int VIDEO_ACCEPTED = 6666;
+    static final int REQUEST_SHOW_VIDEO = 7777;
 
     static String getFilePath(String text, String packageName) {
         String path = "";

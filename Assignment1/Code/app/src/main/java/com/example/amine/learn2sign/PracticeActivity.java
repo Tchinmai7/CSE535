@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,7 +29,7 @@ public class PracticeActivity extends AppCompatActivity {
 
     @BindView(R.id.bt_reject_video)
     Button btRejectVideo;
-
+    String filename;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +37,7 @@ public class PracticeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Intent callingIntent = getIntent();
         Log.e("Word", callingIntent.getStringExtra("Sign"));
+        Toast.makeText(this, callingIntent.getStringExtra("Sign"), Toast.LENGTH_SHORT).show();
         String path = Constants.getFilePath(callingIntent.getStringExtra("Sign"), getPackageName());
         vvUserVideo.setOnCompletionListener(onCompletionListener);
         vvOriginalVideo.setOnCompletionListener(onCompletionListener);
@@ -44,7 +47,8 @@ public class PracticeActivity extends AppCompatActivity {
             vvOriginalVideo.start();
 
         }
-        vvUserVideo.setVideoURI(Uri.parse(callingIntent.getStringExtra("UserVideo")));
+        filename = callingIntent.getStringExtra("UserVideo");
+        vvUserVideo.setVideoURI(Uri.parse(filename));
         vvUserVideo.start();
     }
 
@@ -55,17 +59,22 @@ public class PracticeActivity extends AppCompatActivity {
             {
                 mediaPlayer.start();
             }
-
         }
     };
 
     @OnClick(R.id.bt_accept_video)
     public void acceptVideo() {
-        Toast.makeText(this, "Accept Video", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Accept Video", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.bt_reject_video)
     public void rejectVideo() {
-        Toast.makeText(this, "Reject Video", Toast.LENGTH_LONG).show();
+        this.setResult(Constants.VIDEO_REJECTED);
+        File f = new File(filename);
+        // Just to be safe
+        if (f.exists()) {
+            boolean ret = f.delete();
+        }
+        this.finish();
     }
 }
