@@ -8,7 +8,9 @@ public class Constants {
     static final int VIDEO_REJECTED = 5555;
     static final int VIDEO_ACCEPTED = 6666;
     static final int REQUEST_SHOW_VIDEO = 7777;
-
+    static ClicksLogger clicksLogger = ClicksLogger.getInstance();
+    static String email;
+    static String userId;
     static String getFilePath(String text, String packageName) {
         String path = "";
         if (text.equals("About")) {
@@ -64,4 +66,5 @@ public class Constants {
         }
         return path;
     }
+
 }

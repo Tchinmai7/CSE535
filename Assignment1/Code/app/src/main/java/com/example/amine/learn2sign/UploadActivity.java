@@ -1,15 +1,10 @@
 package com.example.amine.learn2sign;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,21 +19,13 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.ResponseHandlerInterface;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpResponse;
 
 import static com.example.amine.learn2sign.LoginActivity.INTENT_ID;
 import static com.example.amine.learn2sign.LoginActivity.INTENT_SERVER_ADDRESS;
@@ -101,71 +88,71 @@ public class UploadActivity extends AppCompatActivity {
                     } else {
                         params.put("checked",0);
                     }
-                        try {
-                            params.put("uploaded_file", toUpload[i]);
-                            params.put("id",id);
+                    try {
+                        params.put("uploaded_file", toUpload[i]);
+                        params.put("id",id);
 
-                        } catch(FileNotFoundException e) {}
+                    } catch(FileNotFoundException e) {}
 
 
-                        // send request
-                        AsyncHttpClient client = new AsyncHttpClient();
+                    // send request
+                    AsyncHttpClient client = new AsyncHttpClient();
                     final int finalI = i;
                     client.post("http://"+server_ip +"/upload_video.php", params, new AsyncHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Header[] headers, byte[] bytes) {
-                                // handle success response
-                                Log.e("msg success",statusCode+"");
-                                if(statusCode==200) {
-                                    Toast.makeText(UploadActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                                    toUpload[finalI].delete();
-                                    uploadListAdapter.getVideos()[finalI] = null;
-                                    uploadListAdapter.notifyDataSetChanged();
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, byte[] bytes) {
+                            // handle success response
+                            Log.e("msg success",statusCode+"");
+                            if(statusCode==200) {
+                                Toast.makeText(UploadActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                toUpload[finalI].delete();
+                                uploadListAdapter.getVideos()[finalI] = null;
+                                uploadListAdapter.notifyDataSetChanged();
 
-                                    if(checked[finalI]) //video accepted
-                                        sharedPreferences.edit().putInt("Number_Accepted",1+sharedPreferences.getInt("Number_Accepted",0)).apply();
-
-                                }
-                                else {
-                                    Toast.makeText(UploadActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, byte[] bytes, Throwable throwable) {
-                                // handle failure response
-                                Log.e("msg fail",statusCode+"");
-
-                                Toast.makeText(UploadActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                                if(checked[finalI]) //video accepted
+                                    sharedPreferences.edit().putInt("Number_Accepted",1+sharedPreferences.getInt("Number_Accepted",0)).apply();
 
                             }
-                            @Override
-                            public void onProgress(long bytesWritten, long totalSize) {
-                                tv_filename.setText(bytesWritten + " out of " + totalSize);
-
-                                super.onProgress(bytesWritten, totalSize);
+                            else {
+                                Toast.makeText(UploadActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                             }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, byte[] bytes, Throwable throwable) {
+                            // handle failure response
+                            Log.e("msg fail",statusCode+"");
+
+                            Toast.makeText(UploadActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+
+                        }
+                        @Override
+                        public void onProgress(long bytesWritten, long totalSize) {
+                            tv_filename.setText(bytesWritten + " out of " + totalSize);
+
+                            super.onProgress(bytesWritten, totalSize);
+                        }
 
 
-                            @Override
-                            public void onStart() {
-                                tv_filename.setVisibility(View.VISIBLE);
-                                progressBar.setVisibility(View.VISIBLE);
-                                super.onStart();
+                        @Override
+                        public void onStart() {
+                            tv_filename.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.VISIBLE);
+                            super.onStart();
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            Log.e("msg on finish", upload_number+"");
+                            upload_number = upload_number + 1;
+                            if(upload_number == checked.length) {
+                                upload_log_file();
                             }
-
-                            @Override
-                            public void onFinish() {
-                                Log.e("msg on finish", upload_number+"");
-                                upload_number = upload_number + 1;
-                                if(upload_number == checked.length) {
-                                    upload_log_file();
-                                }
-                                tv_filename.setVisibility(View.GONE);
-                                progressBar.setVisibility(View.GONE);
-                                super.onFinish();
-                            }
-                        });
+                            tv_filename.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
+                            super.onFinish();
+                        }
+                    });
 
                         /*
                         UploadFile uploadFile = new UploadFile();
@@ -198,7 +185,7 @@ public class UploadActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                if(statusCode==200)
+                if(statusCode == 200)
                     Toast.makeText(UploadActivity.this, "Done", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(UploadActivity.this, "Log File could not be uploaded", Toast.LENGTH_SHORT).show();

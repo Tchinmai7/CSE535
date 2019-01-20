@@ -120,6 +120,12 @@ public class MainActivity extends AppCompatActivity {
         rb_learn.setChecked(true);
         bt_cancel.setVisibility(View.GONE);
         btProceed.setVisibility(View.GONE);
+
+        /*
+        if ("3 activites not completed") {
+            rb_practice.setVisibility(View.GONE);
+        }
+        */
         rg_practice_learn.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
@@ -212,6 +218,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,"Already Logged In",Toast.LENGTH_SHORT).show();
 
         }
+        Constants.email = getSharedPreferences(this.getPackageName(),Context.MODE_PRIVATE)
+                .getString(INTENT_EMAIL,"tchinmai7@asu.edu");
+        Constants.userId = getSharedPreferences(this.getPackageName(),Context.MODE_PRIVATE)
+                .getString(INTENT_ID,"983837234");
     }
 
     @Override

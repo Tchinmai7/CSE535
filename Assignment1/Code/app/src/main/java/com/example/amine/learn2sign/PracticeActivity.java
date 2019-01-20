@@ -64,6 +64,7 @@ public class PracticeActivity extends AppCompatActivity {
 
     @OnClick(R.id.bt_accept_video)
     public void acceptVideo() {
+        Constants.clicksLogger.updateLog("Video - Rejected");
         Toast.makeText(this, "Accept Video", Toast.LENGTH_SHORT).show();
     }
 
