@@ -11,11 +11,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
 import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cz.msebera.android.httpclient.Header;
 
 public class PracticeActivity extends AppCompatActivity {
     @BindView(R.id.vv_user_video)
@@ -64,13 +69,47 @@ public class PracticeActivity extends AppCompatActivity {
 
     @OnClick(R.id.bt_accept_video)
     public void acceptVideo() {
-        Constants.clicksLogger.updateLog("Video - Rejected");
+        Constants.clicksLogger.updateLog("Video: " + filename + " - Accepted");
         Toast.makeText(this, "Accept Video", Toast.LENGTH_SHORT).show();
+        // Upload the video now
+        String stagingURL = "http://requestbin.fullcontact.com/1e60eif1";
+        String prodURL = "http://10.211.17.171/upload_video.php";
+        RequestParams params = new RequestParams();
+        try {
+            File f = new File(filename);
+            params.put("uploaded_file", f);
+
+            params.put("id", Constants.userId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+        asyncHttpClient.post(stagingURL, params, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                for (Header header : headers) {
+                    Log.e("HEADERS", header.getName() + " : " + header.getValue());
+                }
+                if(statusCode == 200)
+                    Toast.makeText(PracticeActivity.this, "Done", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(PracticeActivity.this, "Log File could not be uploaded", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(PracticeActivity.this, "Log File could not be uploaded", Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     @OnClick(R.id.bt_reject_video)
     public void rejectVideo() {
         this.setResult(Constants.VIDEO_REJECTED);
+        Constants.clicksLogger.updateLog("Video: " + filename + " - Rejected");
         File f = new File(filename);
         // Just to be safe
         if (f.exists()) {

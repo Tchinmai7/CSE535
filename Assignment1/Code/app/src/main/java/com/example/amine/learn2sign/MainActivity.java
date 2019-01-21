@@ -271,7 +271,11 @@ public class MainActivity extends AppCompatActivity {
              timeStarted = System.currentTimeMillis() - timeStarted;
 
              Intent t = new Intent(this,VideoActivity.class);
-             t.putExtra(INTENT_WORD, sp_words.getSelectedItem().toString());
+             if (!practiceMode) {
+                 t.putExtra(INTENT_WORD, sp_words.getSelectedItem().toString());
+             } else {
+                 t.putExtra(INTENT_WORD, chosenWord);
+             }
              t.putExtra(INTENT_TIME_WATCHED, timeStarted);
              startActivityForResult(t, Constants.REQUEST_VIDEO_CAPTURE);
         }

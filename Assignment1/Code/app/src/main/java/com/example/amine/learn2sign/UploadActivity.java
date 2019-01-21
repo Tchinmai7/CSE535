@@ -31,7 +31,6 @@ import static com.example.amine.learn2sign.LoginActivity.INTENT_ID;
 import static com.example.amine.learn2sign.LoginActivity.INTENT_SERVER_ADDRESS;
 
 public class UploadActivity extends AppCompatActivity {
-
     @BindView(R.id.rv_videos)
     RecyclerView rv_videos;
     @BindView(R.id.tv_filename)
@@ -42,6 +41,7 @@ public class UploadActivity extends AppCompatActivity {
     UploadActivity uploadActivity;
     SharedPreferences sharedPreferences;
     static int upload_number = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,16 +50,7 @@ public class UploadActivity extends AppCompatActivity {
         uploadActivity = this;
         rv_videos.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         sharedPreferences =  this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-
         File m = new File(Environment.getExternalStorageDirectory().getPath() + "/Learn2Sign");
-        if(m.exists()) {
-            if(m.isDirectory()) {
-                File[] videos =  m.listFiles();
-                for (int i = 0; i < videos.length; i++) {
-                    Log.d("msg", videos[i].getPath());
-                }
-            }
-        }
         uploadListAdapter = new UploadListAdapter(m.listFiles(), this.getApplicationContext());
         rv_videos.setAdapter(uploadListAdapter);
     }
@@ -92,7 +83,7 @@ public class UploadActivity extends AppCompatActivity {
                         params.put("uploaded_file", toUpload[i]);
                         params.put("id",id);
 
-                    } catch(FileNotFoundException e) {}
+                    } catch(FileNotFoundException ignored) {}
 
 
                     // send request
@@ -110,7 +101,7 @@ public class UploadActivity extends AppCompatActivity {
                                 uploadListAdapter.notifyDataSetChanged();
 
                                 if(checked[finalI]) //video accepted
-                                    sharedPreferences.edit().putInt("Number_Accepted",1+sharedPreferences.getInt("Number_Accepted",0)).apply();
+                                    sharedPreferences.edit().putInt("Number_Accepted",1 + sharedPreferences.getInt("Number_Accepted",0)).apply();
 
                             }
                             else {
