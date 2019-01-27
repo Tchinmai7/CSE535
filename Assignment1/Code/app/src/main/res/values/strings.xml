@@ -7,31 +7,31 @@
         <item>10.211.17.171</item>
     </string-array>
     <string-array name="spinner_words">
-        <item>About</item>
-        <item>And</item>
-        <item>Can</item>
-        <item>Cat</item>
-        <item>Cop</item>
-        <item>Cost</item>
-        <item>Day</item>
-        <item>Deaf</item>
-        <item>Decide</item>
-        <item>Father</item>
-        <item>Find</item>
-        <item>Go Out</item>
-        <item>Gold</item>
-        <item>Goodnight</item>
-        <item>Hearing</item>
-        <item>Here</item>
-        <item>Hospital</item>
-        <item>Hurt</item>
-        <item>If</item>
-        <item>Large</item>
-        <item>Hello</item>
-        <item>Help</item>
-        <item>Sorry</item>
-        <item>After</item>
-        <item>Tiger</item>
+        <item>Alaska</item>
+        <item>Arizona</item>
+        <item>California</item>
+        <item>Colorado</item>
+        <item>Florida</item>
+        <item>Georgia</item>
+        <item>Hawaii</item>
+        <item>Illinois</item>
+        <item>Indiana</item>
+        <item>Kansas</item>
+        <item>Louisiana</item>
+        <item>Massachusetts</item>
+        <item>Michigan</item>
+        <item>Minnesota</item>
+        <item>Nevada</item>
+        <item>NewJersey</item>
+        <item>NewMexico</item>
+        <item>NewYork</item>
+        <item>Ohio</item>
+        <item>Pennsylvania</item>
+        <item>SouthCarolina</item>
+        <item>Texas</item>
+        <item>Utah</item>
+        <item>Washington</item>
+        <item>Wisconsin</item>
     </string-array>
     <string name="title_activity_login">LoginActivity</string>
     <string name="login">Login</string>

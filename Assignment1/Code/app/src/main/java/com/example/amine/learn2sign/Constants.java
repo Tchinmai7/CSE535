@@ -11,58 +11,59 @@ public class Constants {
     static ClicksLogger clicksLogger = ClicksLogger.getInstance();
     static String email;
     static String userId;
+
     static String getFilePath(String text, String packageName) {
         String path = "";
-        if (text.equals("About")) {
-            path = "android.resource://" + packageName + "/" + R.raw._about;
-        } else if(text.equals("And")) {
-            path = "android.resource://" + packageName + "/" + R.raw._and;
-        } else if (text.equals("Can")) {
-            path = "android.resource://" + packageName + "/" + R.raw._can;
-        } else if (text.equals("Cat")) {
-            path = "android.resource://" + packageName + "/" + R.raw._cat;
-        } else if (text.equals("Cop")) {
-            path = "android.resource://" + packageName + "/" + R.raw._cop;
-        } else if (text.equals("Cost")) {
-            path = "android.resource://" + packageName + "/" + R.raw._cost;
-        } else if (text.equals("Day")) {
-            path = "android.resource://" + packageName + "/" + R.raw._day;
-        } else if (text.equals("Deaf")) {
-            path = "android.resource://" + packageName + "/" + R.raw._deaf;
-        } else if (text.equals("Decide")) {
-            path = "android.resource://" + packageName + "/" + R.raw._decide;
-        } else if (text.equals("Father")) {
-            path = "android.resource://" + packageName + "/" + R.raw._father;
-        } else if (text.equals("Find")) {
-            path = "android.resource://" + packageName + "/" + R.raw._find;
-        } else if (text.equals("Go Out")) {
-            path = "android.resource://" + packageName + "/" + R.raw._go_out;
-        } else if (text.equals("Gold")) {
-            path = "android.resource://" + packageName + "/" + R.raw._gold;
-        } else if (text.equals("Goodnight")) {
-            path = "android.resource://" + packageName + "/" + R.raw._good_night;
-        } else if (text.equals("Hearing")) {
-            path = "android.resource://" + packageName + "/" + R.raw._hearing;
-        } else if (text.equals("Here")) {
-            path = "android.resource://" + packageName + "/" + R.raw._here;
-        } else if (text.equals("Hospital")) {
-            path = "android.resource://" + packageName + "/" + R.raw._hospital;
-        } else if (text.equals("Hurt")) {
-            path = "android.resource://" + packageName + "/" + R.raw._hurt;
-        } else if (text.equals("If")) {
-            path = "android.resource://" + packageName + "/" + R.raw._if;
-        } else if (text.equals("Large")) {
-            path = "android.resource://" + packageName + "/" + R.raw._large;
-        } else if (text.equals("Hello")) {
-            path = "android.resource://" + packageName + "/" + R.raw._hello;
-        } else if (text.equals("Help")) {
-            path = "android.resource://" + packageName + "/" + R.raw._help;
-        } else if (text.equals("Sorry")) {
-            path = "android.resource://" + packageName + "/" + R.raw._sorry;
-        } else if (text.equals("After")) {
-            path = "android.resource://" + packageName + "/" + R.raw._after;
-        } else if (text.equals("Tiger")) {
-            path = "android.resource://" + packageName + "/" + R.raw._tiger;
+        if(text.equals("Alaska")) {
+            path = "android.resource://" + packageName + "/" + R.raw.alaska;
+        } else if(text.equals("Arizona")) {
+            path = "android.resource://" + packageName + "/" + R.raw.arizona;
+        } else if (text.equals("California")) {
+            path = "android.resource://" + packageName + "/" + R.raw.california;
+        }else if (text.equals("Colorado")) {
+            path = "android.resource://" + packageName + "/" + R.raw.colorado;
+        }else if (text.equals("Florida")) {
+            path = "android.resource://" + packageName + "/" + R.raw.florida;
+        }else if (text.equals("Georgia")) {
+            path = "android.resource://" + packageName + "/" + R.raw.georgia;
+        }else if (text.equals("Hawaii")) {
+            path = "android.resource://" + packageName + "/" + R.raw.hawaii;
+        }else if (text.equals("Illinois")) {
+            path = "android.resource://" + packageName + "/" + R.raw.illinois;
+        }else if (text.equals("Indiana")) {
+            path = "android.resource://" + packageName + "/" + R.raw.indiana;
+        }else if (text.equals("Kansas")) {
+            path = "android.resource://" + packageName + "/" + R.raw.kansas;
+        }else if (text.equals("Louisiana")) {
+            path = "android.resource://" + packageName + "/" + R.raw.louisiana;
+        }else if (text.equals("Massachusetts")) {
+            path = "android.resource://" + packageName + "/" + R.raw.massachusetts;
+        }else if (text.equals("Michigan")) {
+            path = "android.resource://" + packageName + "/" + R.raw.michigan;
+        }else if (text.equals("Minnesota")) {
+            path = "android.resource://" + packageName + "/" + R.raw.minnesota;
+        }else if (text.equals("Nevada")) {
+            path = "android.resource://" + packageName + "/" + R.raw.nevada;
+        }else if (text.equals("NewJersey")) {
+            path = "android.resource://" + packageName + "/" + R.raw.new_jersey;
+        }else if (text.equals("NewMexico")) {
+            path = "android.resource://" + packageName + "/" + R.raw.new_mexico;
+        }else if (text.equals("NewYork")) {
+            path = "android.resource://" + packageName + "/" + R.raw.new_york;
+        }else if (text.equals("Ohio")) {
+            path = "android.resource://" + packageName + "/" + R.raw.ohio;
+        }else if (text.equals("Pennsylvania")) {
+            path = "android.resource://" + packageName + "/" + R.raw.pennsylvania;
+        }else if (text.equals("SouthCarolina")) {
+            path = "android.resource://" + packageName + "/" + R.raw.south_carolina;
+        }else if (text.equals("Texas")) {
+            path = "android.resource://" + packageName + "/" + R.raw.texas;
+        }else if (text.equals("Utah")) {
+            path = "android.resource://" + packageName + "/" + R.raw.utah;
+        }else if (text.equals("Washington")) {
+            path = "android.resource://" + packageName + "/" + R.raw.washington;
+        }else if (text.equals("Wisconsin")) {
+            path = "android.resource://" + packageName + "/" + R.raw.wisconsin;
         }
         return path;
     }
