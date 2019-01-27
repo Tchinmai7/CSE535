@@ -121,11 +121,13 @@ public class MainActivity extends AppCompatActivity {
         bt_cancel.setVisibility(View.GONE);
         btProceed.setVisibility(View.GONE);
 
-        /*
-        if ("3 activites not completed") {
+        // sharedPreferences.edit().putInt("Number_Accepted",1 + sharedPreferences.getInt("Number_Accepted",0)).apply();
+        if (sharedPreferences.getInt("Number_Accepted", 0) < 3) {
             rb_practice.setVisibility(View.GONE);
+        } else {
+            rb_practice.setVisibility(View.VISIBLE);
         }
-        */
+
         rg_practice_learn.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
