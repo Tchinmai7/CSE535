@@ -120,8 +120,8 @@ public class MainActivity extends AppCompatActivity {
         rb_learn.setChecked(true);
         bt_cancel.setVisibility(View.GONE);
         btProceed.setVisibility(View.GONE);
+        sharedPreferences =  this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 
-        // sharedPreferences.edit().putInt("Number_Accepted",1 + sharedPreferences.getInt("Number_Accepted",0)).apply();
         if (sharedPreferences.getInt("Number_Accepted", 0) < 3) {
             rb_practice.setVisibility(View.GONE);
         } else {

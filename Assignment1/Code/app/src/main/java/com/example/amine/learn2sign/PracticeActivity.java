@@ -101,7 +101,6 @@ public class PracticeActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 Toast.makeText(PracticeActivity.this, "Log File could not be uploaded", Toast.LENGTH_SHORT).show();
-
             }
         });
     }
