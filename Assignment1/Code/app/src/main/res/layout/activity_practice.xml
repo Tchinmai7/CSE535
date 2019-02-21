@@ -5,41 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PracticeActivity">
-
-    <VideoView
-        android:layout_width="match_parent"
-        android:id="@+id/vv_user_video"
-        android:layout_height="300dp"
-        android:layout_margin="20dp" />
-
-    <VideoView
-        android:id="@+id/vv_original_video"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_margin="20dp"
-        android:layout_below="@+id/vv_user_video" />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/vv_original_video"
-        style = "?android:attr/buttonBarStyle">
-
-        <Button
-            android:layout_weight="1"
-            android:layout_width = "0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/ll_not_enough_videos"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bt_reject_video"
-            android:textColor="@android:color/holo_red_light"
-            android:text="@string/buttonReject"
-            style = "@style/Widget.AppCompat.Button.Borderless.Colored" />
+            android:id="@+id/tv_error_message"
+            android:text="@string/error_message_text"
+            android:textSize="20sp"
+            android:layout_margin="20dp"/>
         <Button
-            android:layout_weight="1"
-            android:layout_width = "0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bt_accept_video"
-            android:textColor="@android:color/holo_green_dark"
-            style = "@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:text="@string/buttonAccept"/>
+            android:id="@+id/bt_go_back"
+            android:text="Go Back"
+            android:textSize="20sp"
+            />
 
     </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_word_to_practice"
+        android:layout_margin="10dp"
+        android:textSize="20sp"/>
 </RelativeLayout>

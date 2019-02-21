@@ -59,9 +59,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.rb_learn)
     RadioButton rb_learn;
 
-    @BindView(R.id.rb_practice)
-    RadioButton rb_practice;
-
     @BindView(R.id.sp_words)
     Spinner sp_words;
 
@@ -86,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.ll_after_record)
     LinearLayout ll_after_record;
 
-    @BindView(R.id.tv_word_to_practice)
-    TextView tv_word_to_practice;
 
     String path;
     String returnedURI;
@@ -98,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
     long timeStarted = 0;
     long timeStartedReturn = 0;
     Activity mainActivity;
-    boolean practiceMode = false;
 
     int PERMISSION_ALL = 1;
 
@@ -122,12 +116,6 @@ public class MainActivity extends AppCompatActivity {
         btProceed.setVisibility(View.GONE);
         sharedPreferences =  this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 
-        if (sharedPreferences.getInt("Number_Accepted", 0) < 3) {
-            rb_practice.setVisibility(View.GONE);
-        } else {
-            rb_practice.setVisibility(View.VISIBLE);
-        }
-
         rg_practice_learn.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
@@ -135,21 +123,10 @@ public class MainActivity extends AppCompatActivity {
                 if (checkedId == rb_learn.getId()) {
                     Toast.makeText(getApplicationContext(),"Learn",Toast.LENGTH_SHORT).show();
                     vv_video_learn.setVisibility(View.VISIBLE);
-                    tv_word_to_practice.setVisibility(View.GONE);
                     sp_words.setVisibility(View.VISIBLE);
                     vv_video_learn.start();
                     vv_record.setVisibility(View.GONE);
                     sp_words.setEnabled(true);
-                    practiceMode = false;
-                    timeStarted = System.currentTimeMillis();
-                } else if (checkedId == rb_practice.getId()) {
-                    Toast.makeText(getApplicationContext(),"Practice",Toast.LENGTH_SHORT).show();
-                    vv_video_learn.setVisibility(View.GONE);
-                    sp_words.setVisibility(View.GONE);
-                    tv_word_to_practice.setVisibility(View.VISIBLE);
-                    chosenWord = spinnerWordsArray[new Random().nextInt(spinnerWordsArray.length)];
-                    tv_word_to_practice.setText(chosenWord);
-                    practiceMode = true;
                     timeStarted = System.currentTimeMillis();
                 }
             }
@@ -273,11 +250,9 @@ public class MainActivity extends AppCompatActivity {
              timeStarted = System.currentTimeMillis() - timeStarted;
 
              Intent t = new Intent(this,VideoActivity.class);
-             if (!practiceMode) {
-                 t.putExtra(INTENT_WORD, sp_words.getSelectedItem().toString());
-             } else {
-                 t.putExtra(INTENT_WORD, chosenWord);
-             }
+
+             t.putExtra(INTENT_WORD, sp_words.getSelectedItem().toString());
+
              t.putExtra(INTENT_TIME_WATCHED, timeStarted);
              startActivityForResult(t, Constants.REQUEST_VIDEO_CAPTURE);
         }
@@ -297,17 +272,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.bt_proceed)
     public void sendToServer() {
-        if (!practiceMode) {
+
             Toast.makeText(this,"Send to Server",Toast.LENGTH_SHORT).show();
             Intent t = new Intent(this, UploadActivity.class);
             startActivityForResult(t, Constants.REQUEST_CODE_UPLOAD);
-        } else {
-            // Its in Practice Mode, so now we need to goto practice activity, and show both
-            Intent intent = new Intent(this, PracticeActivity.class);
-            intent.putExtra("Sign", chosenWord);
-            intent.putExtra("UserVideo", returnedURI);
-            startActivityForResult(intent, Constants.REQUEST_SHOW_VIDEO);
-        }
+
     }
 
     @OnClick(R.id.bt_cancel)
@@ -323,9 +292,7 @@ public class MainActivity extends AppCompatActivity {
         sp_words.setEnabled(true);
 
         rb_learn.setEnabled(true);
-        //rb_practice.setEnabled(true);
         timeStarted = System.currentTimeMillis();
-
 
     }
 
@@ -342,7 +309,6 @@ public class MainActivity extends AppCompatActivity {
             bt_record.setVisibility(View.VISIBLE);
             sp_words.setEnabled(true);
             rb_learn.setEnabled(true);
-            //rb_practice.setEnabled(true);
             sp_ip_address.setEnabled(true);
         }
 
@@ -354,7 +320,6 @@ public class MainActivity extends AppCompatActivity {
                 bt_record.setVisibility(View.GONE);
                 btProceed.setVisibility(View.VISIBLE);
                 bt_cancel.setVisibility(View.VISIBLE);
-                //rb_practice.setEnabled(false);
                 vv_record.setVideoURI(Uri.parse(returnedURI));
                 int try_number = sharedPreferences.getInt("record_"+sp_words.getSelectedItem().toString(),0);
                 try_number++;
@@ -383,16 +348,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        if (requestCode == Constants.REQUEST_SHOW_VIDEO && resultCode == Constants.VIDEO_REJECTED) {
-            // Okay, so user rejected. now show him a different video
-            vv_record.setVisibility(View.GONE);
-            bt_record.setVisibility(View.VISIBLE);
-            bt_cancel.setVisibility(View.GONE);
-            btProceed.setVisibility(View.GONE);
-            chosenWord = spinnerWordsArray[new Random().nextInt(spinnerWordsArray.length)];
-            tv_word_to_practice.setText(chosenWord);
-        }
-
     }
 
     //Menu Item for logging out
@@ -441,7 +396,12 @@ public class MainActivity extends AppCompatActivity {
                 sharedPreferences.edit().putInt(getString(R.string.gotoupload), sharedPreferences.getInt(getString(R.string.gotoupload),0)+1).apply();
                 Intent t = new Intent(this,UploadActivity.class);
                 startActivityForResult(t,2000);
-
+                return true;
+            case R.id.menu_practice:
+                Intent intent = new Intent(this, PracticeActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -39,5 +39,6 @@
     <string name="gotoupload">GotoUpload</string>
     <string name="buttonReject">Reject</string>
     <string name="buttonAccept">Accept</string>
+    <string name="error_message_text">You have not uploaded all the necessary videos. Go Back and Upload.</string>
 
 </resources>

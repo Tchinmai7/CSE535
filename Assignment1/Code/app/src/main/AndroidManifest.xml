@@ -20,6 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".PracticeActivity"></activity>
         <activity android:name=".MainActivity" />
         <activity
             android:name=".LoginActivity"
@@ -35,7 +36,7 @@
         <activity
             android:name=".VideoActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".PracticeActivity"></activity>
+        <activity android:name=".PracticeResultActivity" />
     </application>
 
 </manifest>
