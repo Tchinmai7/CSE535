@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
     String path;
     String returnedURI;
     String oldText = "";
-    String chosenWord = "";
     String[] spinnerWordsArray;
     SharedPreferences sharedPreferences;
     long timeStarted = 0;
@@ -216,9 +215,7 @@ public class MainActivity extends AppCompatActivity {
         if (vv_video_learn.getVisibility() == View.VISIBLE) {
             vv_video_learn.start();
         }
-        if (vv_record.getVisibility() == View.VISIBLE) {
-            vv_record.start();
-        }
+
         timeStarted = System.currentTimeMillis();
         super.onResume();
 
@@ -328,7 +325,6 @@ public class MainActivity extends AppCompatActivity {
                 set.add(toAdd);
                 sharedPreferences.edit().putStringSet("RECORDED",set).apply();
                 sharedPreferences.edit().putInt("record_"+sp_words.getSelectedItem().toString(), try_number).apply();
-                vv_record.start();
                 vv_video_learn.start();
             }
 

@@ -77,7 +77,6 @@ public class PracticeResultActivity extends AppCompatActivity {
         try {
             File f = new File(filename);
             params.put("uploaded_file", f);
-
             params.put("id", Constants.userId);
 
         } catch (Exception e) {
@@ -95,6 +94,9 @@ public class PracticeResultActivity extends AppCompatActivity {
                     Toast.makeText(PracticeResultActivity.this, "Done", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(PracticeResultActivity.this, "Log File could not be uploaded", Toast.LENGTH_SHORT).show();
+                Intent in = new Intent(PracticeResultActivity.this, PracticeActivity.class);
+                startActivity(in);
+                finish();
             }
 
             @Override
@@ -113,6 +115,8 @@ public class PracticeResultActivity extends AppCompatActivity {
         if (f.exists()) {
             boolean ret = f.delete();
         }
+        Intent in = new Intent(PracticeResultActivity.this, PracticeActivity.class);
+        startActivity(in) ;
         this.finish();
     }
 }
