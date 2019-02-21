@@ -25,12 +25,25 @@
             android:text="Go Back"
             android:textSize="20sp"
             />
-
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/ll_record_videos">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_word_to_practice"
         android:layout_margin="10dp"
         android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/bt_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="30dp"
+        android:text="Record Video" />
+    </LinearLayout>
 </RelativeLayout>

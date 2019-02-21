@@ -30,7 +30,10 @@ public class PracticeActivity extends AppCompatActivity {
 
     @BindView(R.id.bt_go_back)
     Button bt_go_back;
+    @BindView(R.id.ll_record_videos)
+    LinearLayout ll_record_videos;
 
+    String chosenWord  = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,19 +44,39 @@ public class PracticeActivity extends AppCompatActivity {
         String url = "http://10.211.17.171/check_video_count.php";
         RequestParams params = new RequestParams();
         params.put("id", Constants.userId);
+        //params.put("id", 1213090617);
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 String s = new String(responseBody);
                 Log.e("UPLOAD", s);
-                ll_not_enough_videos.setVisibility(View.GONE);
+                s = s.replaceAll(" ","");
+                s = s.replaceAll("\n", "");
+
+                int val = Integer.parseInt(s);
+                Log.e("UPLOAD", val + "  ");
+                String[] allWords = getResources().getStringArray(R.array.spinner_words);
+                int totalWords = allWords.length;
+                chosenWord =  allWords[(int) (Math.random() * totalWords)];
+                // Each video needs to be uploaded 3 times
+                if (val >= totalWords * 3) {
+                    tv_word_to_practice.setText(chosenWord);
+                    ll_not_enough_videos.setVisibility(View.GONE);
+                    ll_record_videos.setVisibility(View.VISIBLE);
+                } else {
+                    ll_not_enough_videos.setVisibility(View.VISIBLE);
+                    ll_record_videos.setVisibility(View.GONE);
+                    bt_go_back.setVisibility(View.VISIBLE);
+                }
+
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 Log.e("FAIL", "" + statusCode + ": " + new String(responseBody));
                 ll_not_enough_videos.setVisibility(View.VISIBLE);
+                ll_record_videos.setVisibility(View.GONE);
                 bt_go_back.setVisibility(View.VISIBLE);
 
             }
