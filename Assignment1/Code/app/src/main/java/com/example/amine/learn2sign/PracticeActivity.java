@@ -39,7 +39,7 @@ public class PracticeActivity extends AppCompatActivity {
     Button bt_go_back;
     @BindView(R.id.ll_record_videos)
     LinearLayout ll_record_videos;
-    @BindView(R.id.bt_record)
+    @BindView(R.id.bt_prac_record)
     Button bt_record;
 
     String chosenWord  = "";
@@ -50,6 +50,14 @@ public class PracticeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice);
         ButterKnife.bind(this);
+        Intent in = getIntent();
+        String[] allWords = getResources().getStringArray(R.array.spinner_words);
+        final int totalWords = allWords.length;
+        if (in.hasExtra("Word")) {
+            chosenWord = in.getStringExtra("Word");
+        } else {
+            chosenWord = allWords[(int) (Math.random() * totalWords)];
+        }
         timeStarted = System.currentTimeMillis();
         // First check if the user has enough videos recorded to do this action.
         String url = "http://10.211.17.171/check_video_count.php";
@@ -65,17 +73,17 @@ public class PracticeActivity extends AppCompatActivity {
                 s = s.replaceAll("\n", "");
 
                 int val = Integer.parseInt(s);
-                String[] allWords = getResources().getStringArray(R.array.spinner_words);
-                int totalWords = allWords.length;
-                chosenWord =  allWords[(int) (Math.random() * totalWords)];
+
                 // Each video needs to be uploaded 3 times
                 if (val >= totalWords * 3) {
                     tv_word_to_practice.setText(chosenWord);
                     ll_not_enough_videos.setVisibility(View.GONE);
+                    bt_record.setVisibility(View.VISIBLE);
                     ll_record_videos.setVisibility(View.VISIBLE);
                 } else {
                     ll_not_enough_videos.setVisibility(View.VISIBLE);
                     ll_record_videos.setVisibility(View.GONE);
+                    bt_record.setVisibility(View.GONE);
                     bt_go_back.setVisibility(View.VISIBLE);
                 }
 
@@ -83,11 +91,11 @@ public class PracticeActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.e("FAIL", "" + statusCode + ": " + new String(responseBody));
+                Log.e("FAIL", "" + statusCode);
                 ll_not_enough_videos.setVisibility(View.VISIBLE);
                 ll_record_videos.setVisibility(View.GONE);
                 bt_go_back.setVisibility(View.VISIBLE);
-
+                bt_record.setVisibility(View.GONE);
             }
         });
         bt_go_back.setOnClickListener(new View.OnClickListener() {

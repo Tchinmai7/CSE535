@@ -34,15 +34,16 @@ public class PracticeResultActivity extends AppCompatActivity {
     @BindView(R.id.bt_reject_video)
     Button btRejectVideo;
     String filename;
+    String Sign;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice_result);
         ButterKnife.bind(this);
         Intent callingIntent = getIntent();
-        Log.e("Word", callingIntent.getStringExtra("Sign"));
-        Toast.makeText(this, callingIntent.getStringExtra("Sign"), Toast.LENGTH_SHORT).show();
-        String path = Constants.getFilePath(callingIntent.getStringExtra("Sign"), getPackageName());
+        Sign = callingIntent.getStringExtra("Sign");
+        Log.e("Word", Sign);
+        String path = Constants.getFilePath(Sign, getPackageName());
         vvUserVideo.setOnCompletionListener(onCompletionListener);
         vvOriginalVideo.setOnCompletionListener(onCompletionListener);
         if (!path.isEmpty()) {
@@ -116,6 +117,7 @@ public class PracticeResultActivity extends AppCompatActivity {
             boolean ret = f.delete();
         }
         Intent in = new Intent(PracticeResultActivity.this, PracticeActivity.class);
+        in.putExtra("Word", Sign);
         startActivity(in) ;
         this.finish();
     }
