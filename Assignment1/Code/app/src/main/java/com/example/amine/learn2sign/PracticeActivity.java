@@ -58,6 +58,7 @@ public class PracticeActivity extends AppCompatActivity {
         } else {
             chosenWord = allWords[(int) (Math.random() * totalWords)];
         }
+        ClicksLogger.getInstance().updateLog("Word chosen: " + chosenWord);
         timeStarted = System.currentTimeMillis();
         // First check if the user has enough videos recorded to do this action.
         String url = "http://10.211.17.171/check_video_count.php";
@@ -81,6 +82,8 @@ public class PracticeActivity extends AppCompatActivity {
                     ll_not_enough_videos.setVisibility(View.GONE);
                     bt_record.setVisibility(View.VISIBLE);
                     ll_record_videos.setVisibility(View.VISIBLE);
+
+                    ClicksLogger.getInstance().updateLog("Practice Word chosen: " + chosenWord);
                 } else {
                     ll_not_enough_videos.setVisibility(View.VISIBLE);
                     ll_record_videos.setVisibility(View.GONE);
@@ -110,6 +113,8 @@ public class PracticeActivity extends AppCompatActivity {
         bt_record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                ClicksLogger.getInstance().updateLog("Recording started" );
                 Intent intent = new Intent(PracticeActivity.this, VideoActivity.class);
                 intent.putExtra(INTENT_WORD, chosenWord);
                 File f = new File(Environment.getExternalStorageDirectory(), "Learn2Sign");
@@ -129,6 +134,8 @@ public class PracticeActivity extends AppCompatActivity {
         Log.e("OnActivityresult", requestCode + " " + resultCode);
         if (requestCode == Constants.REQUEST_VIDEO_CAPTURE && resultCode == Constants.RETURN_VIDEO_ACTIVITY_SUCCESS) {
             // Video successfully recorded.
+            long timeSpent = System.currentTimeMillis() - timeStarted;
+            ClicksLogger.getInstance().updateLog("Recording took " +  timeSpent + " milliseconds");
             String returnUri = intent.getStringExtra(INTENT_URI);
             Intent in = new Intent(PracticeActivity.this, PracticeResultActivity.class);
             in.putExtra("UserVideo",returnUri );
