@@ -84,7 +84,7 @@ public class PracticeResultActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-        asyncHttpClient.post(stagingURL, params, new AsyncHttpResponseHandler() {
+        asyncHttpClient.post(prodURL, params, new AsyncHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
