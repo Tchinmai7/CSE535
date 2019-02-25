@@ -71,6 +71,7 @@ public class PracticeActivity extends AppCompatActivity {
                 String s = new String(responseBody);
                 s = s.replaceAll(" ","");
                 s = s.replaceAll("\n", "");
+                Log.e("SUCCESS", "" + s);
 
                 int val = Integer.parseInt(s);
 
