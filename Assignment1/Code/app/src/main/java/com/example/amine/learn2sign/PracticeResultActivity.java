@@ -72,8 +72,7 @@ public class PracticeResultActivity extends AppCompatActivity {
         Constants.clicksLogger.updateLog("Video: " + filename + " - Accepted");
         Toast.makeText(this, "Accept Video", Toast.LENGTH_SHORT).show();
         // Upload the video now
-        String stagingURL = "http://requestbin.fullcontact.com/1e60eif1";
-        String prodURL = "http://10.211.17.171/upload_video.php";
+        String prodURL = "http://10.211.17.171/upload_video_performance.php";
         RequestParams params = new RequestParams();
         try {
             File f = new File(filename);
@@ -88,13 +87,13 @@ public class PracticeResultActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                for (Header header : headers) {
-                    Log.e("HEADERS", header.getName() + " : " + header.getValue());
-                }
-                if(statusCode == 200)
+
+                String res = new String(responseBody);
+                Log.e("RESULT", res);
+                if (statusCode == 200 && "success".equals(res))
                     Toast.makeText(PracticeResultActivity.this, "Done", Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(PracticeResultActivity.this, "Log File could not be uploaded", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PracticeResultActivity.this, "Video could not be uploaded, Try again", Toast.LENGTH_SHORT).show();
                 Intent in = new Intent(PracticeResultActivity.this, PracticeActivity.class);
                 startActivity(in);
                 finish();
@@ -102,7 +101,7 @@ public class PracticeResultActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(PracticeResultActivity.this, "Log File could not be uploaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PracticeResultActivity.this, "Video could not be uploaded, Try again", Toast.LENGTH_SHORT).show();
             }
         });
     }
