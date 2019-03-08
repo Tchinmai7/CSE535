@@ -15,6 +15,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,9 +36,11 @@ public class PracticeResultActivity extends AppCompatActivity {
     Button btRejectVideo;
     String filename;
     String Sign;
+    long timeStarted;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        timeStarted = System.currentTimeMillis();
         setContentView(R.layout.activity_practice_result);
         ButterKnife.bind(this);
         Intent callingIntent = getIntent();
@@ -69,7 +72,9 @@ public class PracticeResultActivity extends AppCompatActivity {
 
     @OnClick(R.id.bt_accept_video)
     public void acceptVideo() {
-        Constants.clicksLogger.updateLog("Video: " + filename + " - Accepted");
+        long timeTakenToDecide = timeStarted - System.currentTimeMillis();
+
+        Constants.clicksLogger.updateLog("Video: " + filename + " - Accepted in " + timeTakenToDecide + " milliseconds");
         Toast.makeText(this, "Accept Video", Toast.LENGTH_SHORT).show();
         // Upload the video now
         String prodURL = "http://10.211.17.171/upload_video_performance.php";
@@ -82,6 +87,7 @@ public class PracticeResultActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
         asyncHttpClient.post(prodURL, params, new AsyncHttpResponseHandler() {
 
@@ -109,7 +115,8 @@ public class PracticeResultActivity extends AppCompatActivity {
     @OnClick(R.id.bt_reject_video)
     public void rejectVideo() {
         this.setResult(Constants.VIDEO_REJECTED);
-        Constants.clicksLogger.updateLog("Video: " + filename + " - Rejected");
+        long timeTakenToDecide = timeStarted - System.currentTimeMillis();
+        Constants.clicksLogger.updateLog("Video: " + filename + " - Rejected in" + timeTakenToDecide + " milliseconds");
         File f = new File(filename);
         // Just to be safe
         if (f.exists()) {
