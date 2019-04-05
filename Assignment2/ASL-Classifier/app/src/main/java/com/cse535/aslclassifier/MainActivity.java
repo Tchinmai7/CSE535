@@ -1,22 +1,100 @@
 package com.cse535.aslclassifier;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+
+import java.io.File;
+import java.io.FileReader;
+import java.util.stream.IntStream;
 
 public class MainActivity extends AppCompatActivity {
+    int PERMISSION_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
-    private int classifyRow(String line) {
-        String[] rowVals = line.split(",");
-        float[] row = new float[rowVals.length];
-        int i = 0;
-        for (String r: rowVals) {
-            row[i] = Float.parseFloat(r);
-            i++;
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
         }
+        else {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_CODE);
+        }
+        String filename = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+        filename = filename + "/about.csv";
+        classifyFile(filename);
+        Log.e("NAME", filename);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (!(requestCode == PERMISSION_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+
+    private void classifyFile(String fileName) {
+        File csv = new File(fileName);
+        try {
+            CSVReader reader =  new CSVReaderBuilder(new FileReader(csv.getAbsolutePath())).build();
+
+            long startTime = System.currentTimeMillis();
+            int num_about = 0;
+            int num_father = 0;
+            int num_error = 0;
+            String[] row;
+            row = reader.readNext();
+            // Skip first row
+            row = reader.readNext();
+            while( row != null) {
+                float[] vals = cleanRow(row);
+                int result = classifyRow(vals);
+                if (result == 0) {
+                    num_about ++;
+                } else if (result == 1) {
+                    num_father ++;
+                } else {
+                    num_error ++;
+                }
+                row = reader.readNext();
+            }
+            long endTime = System.currentTimeMillis();
+            Log.e("Results", "The values are About: " + num_about + " Father: " + num_father + " Error: " + num_error + " Time is: " + (endTime - startTime) + "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private float[] cleanRow(String[] line) {
+        int[] indexes = new int[] {4,5,7,8,10,11,13,14,16,17,19,20,22,23,25,26,28,29,31,32,34,35};
+
+        float[] row = new float[indexes.length + 1];
+        int i = 0;
+        int j = 1;
+        for (i = 0 ; i < line.length; i++) {
+            int finalI = i;
+            boolean result =IntStream.of(indexes).anyMatch(x -> x == finalI);
+            if (result) {
+                row[j] = Float.parseFloat(line[i]);
+                j++;
+            }
+        }
+        return row;
+    }
+    private int classifyRow(float[] row) {
         if (row.length != 23) {
             return -1;
         }
@@ -184,11 +262,11 @@ public class MainActivity extends AppCompatActivity {
                     if (row[12] < 820.641) {
                         if (row[17] < 20.7043) {
                             if (row[18] < 259.669) {
-                               if (row[20] < 334.645) {
-                                   return 0;
-                               } else {
-                                   return 1;
-                               }
+                                if (row[20] < 334.645) {
+                                    return 0;
+                                } else {
+                                    return 1;
+                                }
                             } else {
                                 if (row[20] < 307.44) {
                                     return 0;
