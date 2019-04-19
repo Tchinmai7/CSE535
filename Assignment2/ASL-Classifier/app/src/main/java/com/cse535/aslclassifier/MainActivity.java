@@ -1,11 +1,9 @@
 package com.cse535.aslclassifier;
-
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +18,7 @@ import java.util.stream.IntStream;
 
 public class MainActivity extends AppCompatActivity {
     int PERMISSION_CODE = 1;
+    int READ_REQUEST_CODE = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +36,14 @@ public class MainActivity extends AppCompatActivity {
         filename = filename + "/about.csv";
         classifyFile(filename);
         Log.e("NAME", filename);
+    }
+
+    public void performFileSearch() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        //intent.setType("text/csv");
+        intent.setType("*/*");
+        startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
     @Override

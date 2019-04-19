@@ -31,46 +31,7 @@ mdl = fitcsvm(...
     'ClassNames', [0; 1]);
 dataLabel = predict(mdl, testAxisX);
 toc
-
 index = testAxisY == dataLabel;
 correct_classifications = nnz(index);
 accuracy = (correct_classifications/length(dataLabel)) * 100;
 display(accuracy);
-
-disp(mdl.SupportVectors);
-disp(mdl.Bias);
-% BoxConstraints
-%     CacheInfo
-%     ConvergenceInfo
-%     Gradient
-%     IsSupportVector
-%     Nu
-%     NumIterations
-%     OutlierFraction
-%     ShrinkagePeriod
-%     Solver
-%     Y
-%     X
-%     RowsUsed
-%     W
-%     ModelParameters
-%     NumObservations
-%     BinEdges
-%     HyperparameterOptimizationResults
-%     PredictorNames
-%     CategoricalPredictors
-%     ResponseName
-%     ExpandedPredictorNames
-%     ClassNames
-   % Prior
-   % Cost
-   % ScoreTransform
-   % Alpha
-   % Beta
-   % Bias
-   % KernelParameters
-   % Mu
-   % Sigma
-   % SupportVectors
-   % SupportVectorLabels
-   
