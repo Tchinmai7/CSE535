@@ -7,10 +7,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.PixelFormat;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -23,8 +19,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -42,7 +36,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
 
     private List<String> fileList = new ArrayList<String>();
     String choice,classChoice = "Naive Bayes";
-    String dbFilePath = Environment.getExternalStorageDirectory().getPath();
+    String dbFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
            // "/sdcard/Android/data/";
     EditText user_name;
     File root,selected_File;
@@ -96,7 +90,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         } else {
-            root = new File(dbFilePath + getPackageName());
+            root = new File(dbFilePath + "/" + getPackageName());
             if (root.listFiles() != null) {
                 ListDir(root);
             }
