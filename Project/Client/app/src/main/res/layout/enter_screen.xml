@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".EnterScreen">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvResult3"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Results"
+            android:autoSizeMaxTextSize="50sp"
+            android:textAlignment="center"
+            android:paddingTop="20dp"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform" />
+
+        <TextView
+            android:id="@+id/tvResult4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+        android:id="@+id/tvResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/tvResult1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textColor="@color/colorPrimary" />
+
+
+        <TextView
+            android:id="@+id/tvResult5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/tvResult6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/tvResult7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/tvResult8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimary" />
+
+
+    </LinearLayout>
+</ScrollView>
