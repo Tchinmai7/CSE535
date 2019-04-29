@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from .serializers import FileSerializer
-
+from .driver import authUser
 
 class FileUploadView(APIView):
     parser_class = (FileUploadParser,)
@@ -16,7 +16,8 @@ class FileUploadView(APIView):
 
         if file_serializer.is_valid():
             file_serializer.save()
-            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+            print(file_serializer.data)
+            return Response(authUser(file_serializer.data), status=status.HTTP_200_OK)
         else:
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
