@@ -6,11 +6,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+import io.realm.Realm;
+
 public class LoginScreen extends Activity implements AdapterView.OnItemSelectedListener {
 
     private List<String> fileList = new ArrayList<String>();
@@ -52,6 +57,27 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    public AuthenticationHistory getAhObject(Realm realm) {
+        AuthenticationHistory ah;
+        ah = realm.where(AuthenticationHistory.class).findFirst();
+        if (ah == null) {
+            ah = new AuthenticationHistory();
+            realm.copyToRealm(ah);
+            realm.commitTransaction();
+        }
+        return ah;
+    }
+
+    public AuthenticationHistory updateAh(AuthenticationHistory ah, Realm realm, String serverChoice) {
+        ah.setTotalAuthAttempts(ah.getTotalAuthAttempts() + 1);
+        if ("cloud".equals(serverChoice)) {
+            ah.setNumCloud(ah.getNumCloud() + 1);
+        } else {
+            ah.setNumFog(ah.getNumFog() + 1);
+        }
+
+
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +99,6 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
         newAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 
         classifiername.setAdapter(newAdapter);
-
 
         classifiername.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -99,6 +124,9 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
         final Button btn_Login = findViewById(R.id.btnLogin);
         Button btn_Register = findViewById(R.id.btnRegister);
 
+        Realm realm = Realm.getDefaultInstance();
+        AuthenticationHistory ah = getAhObject(realm);
+
         btn_Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,18 +135,19 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                 res = "";
                 cloudLatency = measureLatency(Constants.cloudServer, true);
                 fogLatency = measureLatency(Constants.fogServer, false);
+                boolean choice_of_server = useCloudServer();
                 String server_url;
+                if (choice_of_server) {
+                    server_url = Constants.cloudServer;
+                    choice = "Cloud";
+                } else {
+                    server_url = Constants.fogServer;
+                    choice = "Fog";
+                }
+
                 final ProgressDialog dialog = new ProgressDialog(LoginScreen.this);
                 final long startTimer;
-                if (cloudLatency > fogLatency) {
-                    choice = "Fog";
-                } else {
-                    choice = "Cloud";
-                }
-                if (choice.equalsIgnoreCase("Cloud"))
-                    server_url = Constants.cloudServer;
-                else
-                    server_url = Constants.fogServer;
+
                 if (fileName.getSelectedItem() == null) {
                     new AlertDialog.Builder(LoginScreen.this)
                             .setTitle("Error!")
@@ -189,6 +218,9 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
 
     }
 
+    private boolean useCloudServer() {
+        return cloudLatency <= fogLatency;
+    }
 
     public static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
@@ -200,7 +232,6 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
         }
         return true;
     }
-
     private void ListDir(File root) {
 
         File[] files = root.listFiles();
