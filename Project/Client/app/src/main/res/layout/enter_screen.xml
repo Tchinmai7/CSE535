@@ -88,5 +88,9 @@ tools:context=".EnterScreen">
             android:textColor="@color/colorPrimary" />
 
 
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>

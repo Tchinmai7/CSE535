@@ -48,7 +48,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
     TextView cloudLatencyTV;
     TextView fogLatencyTV;
     Spinner classifiername, fileName;
-    public String accuracy = "";
+    public int accuracy = 0;
     public static long cloudLatency, fogLatency;
     String res = "";
     int PERMISSION_ALL = 1;
@@ -57,31 +57,16 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    public AuthenticationHistory getAhObject(Realm realm) {
-        AuthenticationHistory ah;
-        ah = realm.where(AuthenticationHistory.class).findFirst();
-        if (ah == null) {
-            ah = new AuthenticationHistory();
-            realm.copyToRealm(ah);
-            realm.commitTransaction();
-        }
-        return ah;
-    }
-
-    public AuthenticationHistory updateAh(AuthenticationHistory ah, Realm realm, String serverChoice) {
-        ah.setTotalAuthAttempts(ah.getTotalAuthAttempts() + 1);
-        if ("cloud".equals(serverChoice)) {
-            ah.setNumCloud(ah.getNumCloud() + 1);
-        } else {
-            ah.setNumFog(ah.getNumFog() + 1);
-        }
-
-
-    }
+    int batLevel;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_screen);
+
+        BatteryManager bm = (BatteryManager)getSystemService(BATTERY_SERVICE);
+        batLevel = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+
         cloudLatencyTV = findViewById(R.id.cloud_latency);
         fogLatencyTV = findViewById(R.id.fog_latency);
 
@@ -124,8 +109,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
         final Button btn_Login = findViewById(R.id.btnLogin);
         Button btn_Register = findViewById(R.id.btnRegister);
 
-        Realm realm = Realm.getDefaultInstance();
-        AuthenticationHistory ah = getAhObject(realm);
+        final Realm realm = Realm.getDefaultInstance();
 
         btn_Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,18 +117,6 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                 fogLatencyTV.setText("");
                 cloudLatencyTV.setText("");
                 res = "";
-                cloudLatency = measureLatency(Constants.cloudServer, true);
-                fogLatency = measureLatency(Constants.fogServer, false);
-                boolean choice_of_server = useCloudServer();
-                String server_url;
-                if (choice_of_server) {
-                    server_url = Constants.cloudServer;
-                    choice = "Cloud";
-                } else {
-                    server_url = Constants.fogServer;
-                    choice = "Fog";
-                }
-
                 final ProgressDialog dialog = new ProgressDialog(LoginScreen.this);
                 final long startTimer;
 
@@ -155,6 +127,27 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                             .setPositiveButton(android.R.string.ok, null)
                             .show();
                 }  else {
+                    cloudLatency = measureLatency(Constants.cloudServer, true);
+                    fogLatency = measureLatency(Constants.fogServer, false);
+                    AuthenticationHistory ah = Constants.getAhObject(realm);
+                    realm.beginTransaction();
+                    ah.addCloudLatency(cloudLatency);
+                    ah.addFogLatency(fogLatency);
+                    ah.addAuthAttempt();
+                    boolean choice_of_server = useCloudServer();
+                    String server_url;
+                    if (choice_of_server) {
+                        server_url = Constants.cloudServer;
+                        ah.addNumCloud();
+                        choice = "Cloud";
+                    } else {
+                        server_url = Constants.fogServer;
+                        ah.addNumFog();
+                        choice = "Fog";
+                    }
+                    realm.copyToRealm(ah);
+                    realm.commitTransaction();
+
                     startTimer = System.currentTimeMillis();
                     dialog.setTitle("Login Loader");
                     dialog.setMessage("Authenticating......");
@@ -173,23 +166,38 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                             if (statusCode == 200) {
-                                accuracy = new String(responseBody);
+                                AuthenticationHistory ah = Constants.getAhObject(realm);
+                                realm.beginTransaction();
+
+                                // accuracy = Integer.parseInt(new String(responseBody));
+                                accuracy = 80;
+                                ah.addAccuracy(accuracy);
                                 if (dialog.isShowing()) {
                                     dialog.dismiss();
                                 }
                                 long timer = System.currentTimeMillis() - startTimer;
+                                ah.addClassifier(classifiername.getSelectedItem().toString());
+                                if ("cloud".equals(choice)) {
+                                    ah.addCloudExecutionTime(timer);
+                                } else {
+                                    ah.addFogExecutionTime(timer);
+                                }
+
                                 Intent i = new Intent(LoginScreen.this, EnterScreen.class);
                                 i.putExtra("classifier", classifiername.getSelectedItem().toString());
                                 i.putExtra("filename", fileName.getSelectedItem().toString());
                                 i.putExtra("accuracy", accuracy);
                                 i.putExtra("server", choice);
                                 i.putExtra("executionTime", Long.toString(timer));
+                                i.putExtra("InitBattery", batLevel);
                                 if (cloudLatency > fogLatency) {
                                     i.putExtra("networkDelay",fogLatency);
                                 }
                                 else {
                                     i.putExtra("networkDelay",cloudLatency);
                                 }
+                                realm.copyToRealm(ah);
+                                realm.commitTransaction();
                                 startActivity(i);
                             }
                             else
@@ -199,9 +207,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                         @Override
                         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                             Toast.makeText(LoginScreen.this, "Error with Request", Toast.LENGTH_SHORT).show();
-
                         }
-
                     });
 
                 }

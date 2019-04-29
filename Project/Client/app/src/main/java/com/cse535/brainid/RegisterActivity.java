@@ -108,8 +108,9 @@ public class RegisterActivity extends AppCompatActivity {
                                             })
                                             .show();
                                 }
-                                else
+                                else {
                                     Toast.makeText(RegisterActivity.this, "EEG File could not be uploaded. Try Again", Toast.LENGTH_SHORT).show();
+                                }
                             }
 
                             @Override
