@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-
 import glob
 import argparse
 import os
 import sys
 import pickle
-
 import pyedflib
 import numpy as np
 from scipy.fftpack import fft
@@ -15,6 +13,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.naive_bayes import MultinomialNB
+import json
 
 FFT_SAMPLE_START = 0
 FFT_SAMPLE_STOP = 20
@@ -41,9 +40,15 @@ def FeaturesFromDir(directory):
     labelList = []
     # This is only to check how many label are used this time of training
     labelDict = {}
-    print('Number of edf files: {}'.format(len(glob.glob(directory + '/*.edf'))))
-    for fileFullPath in glob.glob(directory + '/*.edf'):
+    arr = []
+    for path, subdirs, files in os.walk(directory):
+        for name in files:
+            arr.append(os.path.join(path, name))
+    print('Number of edf files: {}'.format(len(arr)))
+
+    for fileFullPath in arr:
         fileName = os.path.basename(fileFullPath)
+        print(fileName)
         # use the file name for the label
         ID = int(fileName[1:4])
         featureSet = FeatureExtFromEdf(fileFullPath)
@@ -54,40 +59,46 @@ def FeaturesFromDir(directory):
     print ('')
     return [brainActList, labelList]
 
-def writeSvm(directory,modelData):
+def writeSvm(directory, train_data, test_data, train_labels, test_labels):
     clf = svm.SVC(kernel='linear', decision_function_shape='ovo', probability=True)
-    clf.fit(modelData[0], modelData[1])
-    with open('./svmModel.dat', 'wb') as pickleFile:
+    clf.fit(train_data, train_labels)
+    with open(directory + os.sep + 'svmModel.dat', 'wb') as pickleFile:
         pickle.dump(clf, pickleFile)
+    return (clf.score(test_data, test_labels) * 100)
 
-def writeknn(directory,modelData):
-
+def writeknn(directory, train_data, test_data, train_labels, test_labels):
     classifier = KNeighborsClassifier(n_neighbors=5)
-    classifier.fit(modelData[0], modelData[1])
-    with open('./knnModel.dat', 'wb') as pickleFile:
+    classifier.fit(train_data, train_labels)
+    with open(directory + os.sep + 'knnModel.dat', 'wb') as pickleFile:
         pickle.dump(classifier, pickleFile)
+    return (classifer.score(test_data, test_labels) * 100)
 
-def writeRandomForest(directory,modelData):
-
+def writeRandomForest(directory, train_data, test_data, train_labels, test_labels):
     regressor = RandomForestRegressor(n_estimators=20, random_state=0)
-    regressor.fit(modelData[0], modelData[1])
-    with open('./randomForestModel.dat', 'wb') as pickleFile:
+    regressor.fit(train_data, train_labels)
+    with open(directory + os.sep + 'randomForestModel.dat', 'wb') as pickleFile:
         pickle.dump(regressor, pickleFile)
+    return (regressor.score(test_data, test_labels) * 100)
 
 
-def writeNaiveBayes(directory,modelData):
-
-    nb = MultinomialNB().fit(modelData[0], modelData[1])
-    with open('./naiveBayesModel.dat', 'wb') as pickleFile:
+def writeNaiveBayes(directory, train_data, test_data, train_labels, test_labels):
+    nb = MultinomialNB()
+    nb.fit(train_data, train_labels)
+    with open(directory + os.sep + 'naiveBayesModel.dat', 'wb') as pickleFile:
         pickle.dump(nb, pickleFile)
-
-
+    return (nb.score(test_data, test_labels) * 100)
+    
 def writeFiles(directory):
-    modelData = FeaturesFromDir(directory)
-    writeSvm(directory,modelData)
-    writeknn(directory,modelData)
-    writeRandomForest(directory,modelData)
-    writeNaiveBayes(directory,modelData)
+    data, labels  = FeaturesFromDir(directory)
+    train_data, test_data, train_labels, test_labels = train_test_split(data, labels, test_size = 0.1, random_state = 42)
+    results = {}
+    results["SVM"] = writeSvm(directory, train_data, test_data, train_labels, test_labels)
+    results["KNN"] = writeknn(directory, train_data, test_data, train_labels, test_labels)
+    results["RandomForest"] = writeRandomForest(directory, train_data, test_data, train_labels, test_labels)
+    results["Naive-Bayes"] = writeNaiveBayes(directory, train_data, test_data, train_labels, test_labels)
+    print(results)
+    with open(directory + os.sep + 'results.json', 'w') as fp:
+        json.dump(results, fp)
 
-#directory = '/Users/sangeethaswaminathan/PycharmProjects/tarun-mc/train2/'
-#writeFiles(directory)
+directory = '/home/ubuntu/CSE535/Project/Server/data/'
+writeFiles(directory)

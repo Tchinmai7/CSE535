@@ -8,6 +8,8 @@ for i in range(1,110):
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
     for r in range(1, 15):
+        if r == 12:
+            continue
         run_num = "R{:02d}".format(r)
         file_name = "{0}/{0}{1}.edf".format(subject, run_num)
         url = "{0}/{1}".format(base_url, file_name)
