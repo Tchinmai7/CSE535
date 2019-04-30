@@ -86,36 +86,105 @@ tools:context=".EnterScreen">
             android:textAlignment="center"
             android:textSize="20dp"
             android:textColor="@color/colorPrimary" />
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_classifer"
+            android:text="Classifier Choices"
+            android:textSize="20sp"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"/>
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/classifer_bar"
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_marginTop="10dp"
+            android:layout_height="250dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_cloud_latency"
+            android:text="Cloud Server Latencies across attempts"
+            android:textSize="20sp"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"/>
+
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/cloud_latency_line"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_fog_latency"
+            android:text="Fog Server Latencies across attempts"
+            android:textSize="20sp"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"/>
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/fog_latency_line"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+
+            android:layout_marginTop="10dp"
+            android:layout_height="250dp"
             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_accuracy"
+            android:text="Accuracies across attempts"
+            android:textSize="20sp"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"/>
+
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/accuracies_line"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+
+            android:layout_marginTop="10dp"
+            android:layout_height="250dp"
             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_cloud_exec_time"
+            android:text="Cloud Execution times across attempts"
+            android:textSize="20sp"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"/>
+
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/cloud_exec_time"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="250dp"
             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/tv_fog_exec_time"
+            android:layout_height="wrap_content"
+            android:text="Fog Execution times across attempts"
+            android:textSize="20sp"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"/>
+
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/fog_exec_time"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="250dp"
             />
     </LinearLayout>
 </ScrollView>

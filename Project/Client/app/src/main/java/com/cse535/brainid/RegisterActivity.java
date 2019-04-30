@@ -120,6 +120,14 @@ public class RegisterActivity extends AppCompatActivity {
 
                             }
                         });
+                        params = new RequestParams();
+                        try {
+                            params.put("UserSignalFile", f);
+                            params.put("UserName", username);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
                         client_logs.post(Constants.fogServer + "/register", params, new AsyncHttpResponseHandler() {
 
                             @Override

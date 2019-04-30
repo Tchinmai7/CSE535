@@ -47,7 +47,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
     TextView fogLatencyTV;
     Spinner classifiername, fileName;
     public double accuracy = 0;
-    public static double cloudLatency, fogLatency;
+    public double cloudLatency, fogLatency;
     String res = "";
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
@@ -62,6 +62,8 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_screen);
 
+        cloudLatency = measureLatency(Constants.cloudServer, true);
+        fogLatency = measureLatency(Constants.fogServer, false);
         BatteryManager bm = (BatteryManager)getSystemService(BATTERY_SERVICE);
         batLevel = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
 
@@ -125,8 +127,6 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                             .setPositiveButton(android.R.string.ok, null)
                             .show();
                 }  else {
-                    cloudLatency = measureLatency(Constants.cloudServer, true);
-                    fogLatency = measureLatency(Constants.fogServer, false);
                     AuthenticationHistory ah = Constants.getAhObject(realm);
                     realm.beginTransaction();
                     ah.addCloudLatency(cloudLatency);
@@ -135,6 +135,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                     boolean choice_of_server = useCloudServer();
                     String server_url;
                     if (choice_of_server) {
+                        Log.e("Register", "Using Cloud Server");
                         server_url = Constants.cloudServer;
                         ah.addNumCloud();
                         choice = "Cloud";
@@ -223,6 +224,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
     }
 
     private boolean useCloudServer() {
+        Log.e("Login", cloudLatency + "," +fogLatency);
         return cloudLatency <= fogLatency;
     }
 
@@ -275,11 +277,12 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
     private double measureLatency(String url, final boolean isCloud) {
         AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
         final long startTime = System.currentTimeMillis();
         final double[] latency = new double[1];
-        asyncHttpClient.get(url, new AsyncHttpResponseHandler() {
+        asyncHttpClient.get(url + "/latency", new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 long endTime = System.currentTimeMillis();
@@ -293,9 +296,11 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                 if (isCloud) {
                     msg = "Cloud Latency: " + msg;
                     cloudLatencyTV.setText(msg);
+                    cloudLatency = latency[0];
                 } else {
                     msg = "Fog Latency: " + msg;
                     fogLatencyTV.setText(msg);
+                    fogLatency = latency[0];
                 }
             }
             @Override

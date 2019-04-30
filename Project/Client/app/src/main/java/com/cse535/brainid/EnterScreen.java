@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -56,11 +57,18 @@ public class EnterScreen extends Activity {
         BarDataSet dataSet = new BarDataSet(Barentry, "Classifiers");
         BarData data = new BarData(dataSet);
         chart.setData(data);
+        chart.getXAxis().setDrawGridLines(false);
+        chart.getAxisLeft().setDrawGridLines(false);
+        chart.getAxisRight().setDrawGridLines(false);
         chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
         chart.setFitBars(true); // make the x-axis fit exactly all bars
         chart.invalidate(); // refresh
     }
-    private void chartLine(List<Double> values, LineChart chart, String title) {
+    private void chartLine(List<Double> values, LineChart chart, String title, TextView id) {
+        if (values.size() == 0) {
+            chart.setVisibility(View.GONE);
+            id.setVisibility(View.GONE);
+        }
         List<Entry> entries = new ArrayList<Entry>();
         Integer i = 0;
         for (Double v: values) {
@@ -69,6 +77,9 @@ public class EnterScreen extends Activity {
         }
         LineDataSet dataSet = new LineDataSet(entries, title);
         LineData lineData = new LineData(dataSet);
+        chart.getXAxis().setDrawGridLines(false);
+        chart.getAxisLeft().setDrawGridLines(false);
+        chart.getAxisRight().setDrawGridLines(false);
         chart.setData(lineData);
         chart.invalidate();
     }
@@ -106,10 +117,10 @@ public class EnterScreen extends Activity {
         Realm realm = Realm.getDefaultInstance();
         AuthenticationHistory ah = Constants.getAhObject(realm);
         chartBarGraph(ah);
-        chartLine(ah.getAccuracies(), (LineChart) findViewById(R.id.accuracies_line), "Accuracies");
-        chartLine(ah.getCloudExecutionTimes(), (LineChart)findViewById(R.id.cloud_exec_time), "Cloud Exection Time");
-        chartLine(ah.getFogExecutionTimes(), (LineChart)findViewById(R.id.fog_exec_time), "Fog Execution Time");
-        chartLine(ah.getFogLatencies(), (LineChart)findViewById(R.id.fog_latency_line), "Fog Latencies");
-        chartLine(ah.getCloudLatencies(), (LineChart)findViewById(R.id.cloud_latency_line), "Cloud Latencies");
+        chartLine(ah.getAccuracies(), (LineChart) findViewById(R.id.accuracies_line), "Accuracies", (TextView)findViewById(R.id.tv_accuracy));
+        chartLine(ah.getCloudExecutionTimes(), (LineChart)findViewById(R.id.cloud_exec_time), "Cloud Exection Time", (TextView) findViewById(R.id.tv_cloud_exec_time));
+        chartLine(ah.getFogExecutionTimes(), (LineChart)findViewById(R.id.fog_exec_time), "Fog Execution Time", (TextView)findViewById(R.id.tv_fog_exec_time));
+        chartLine(ah.getFogLatencies(), (LineChart)findViewById(R.id.fog_latency_line), "Fog Latencies", (TextView) findViewById(R.id.tv_fog_latency));
+        chartLine(ah.getCloudLatencies(), (LineChart)findViewById(R.id.cloud_latency_line), "Cloud Latencies", (TextView)findViewById(R.id.tv_cloud_latency));
     }
 }
