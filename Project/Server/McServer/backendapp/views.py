@@ -10,9 +10,7 @@ import random
 
 class LoginView(APIView):
     parser_class = (FileUploadParser,)
-
     def post(self, request, *args, **kwargs):
-
         file_serializer = LoginSerializer(data=request.data)
         if file_serializer.is_valid():
             file_serializer.save()
@@ -25,11 +23,8 @@ class LoginView(APIView):
 
 class RegisterView(APIView):
     parser_class = (FileUploadParser,)
-
     def post(self, request, *args, **kwargs):
-
         file_serializer = RegisterSerializer(data=request.data)
-
         if file_serializer.is_valid():
             file_serializer.save()
             print(file_serializer.data)
