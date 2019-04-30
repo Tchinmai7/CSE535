@@ -68,15 +68,7 @@
     <last-search-timestamp>1556498835796</last-search-timestamp>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4cf60e8-85f6-432e-bb77-df374ac57bc1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/LoginScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/LoginScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/RegisterActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/RegisterActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/login_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/login_screen.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/McServer/backendapp/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/McServer/backendapp/train.py" afterDir="false" />
-    </list>
+    <list default="true" id="b4cf60e8-85f6-432e-bb77-df374ac57bc1" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,7 +97,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/RegisterActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="293">
-              <caret line="76" column="47" lean-forward="true" selection-start-line="76" selection-start-column="47" selection-end-line="76" selection-end-column="47" />
+              <caret line="76" column="47" selection-start-line="76" selection-start-column="47" selection-end-line="76" selection-end-column="47" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -126,7 +118,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/LoginScreen.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="301">
-              <caret line="135" column="36" lean-forward="true" selection-start-line="131" selection-start-column="19" selection-end-line="135" selection-end-column="36" />
+              <caret line="135" column="36" selection-start-line="131" selection-start-column="19" selection-end-line="135" selection-end-column="36" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#4632#11062#0" expanded="true" />
@@ -140,7 +132,7 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/Constants.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="241">
-              <caret line="21" column="5" lean-forward="true" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
+              <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -386,7 +378,7 @@
     <frame x="0" y="23" width="1440" height="810" extended-state="0" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.3297568" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.3297568" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Build Variants" order="4" side_tool="true" />
@@ -395,7 +387,7 @@
       <window_info id="Capture Tool" order="7" />
       <window_info id="Resources Explorer" order="8" />
       <window_info anchor="bottom" id="Run" order="0" weight="0.32729805" />
-      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.49713877" visible="true" weight="0.32729805" />
+      <window_info active="true" anchor="bottom" id="Logcat" order="1" sideWeight="0.49713877" visible="true" weight="0.32729805" />
       <window_info anchor="bottom" id="TODO" order="2" />
       <window_info anchor="bottom" id="Find" order="3" weight="0.32729805" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.46239555" />
@@ -670,7 +662,7 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/Constants.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="241">
-          <caret line="21" column="5" lean-forward="true" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
+          <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -680,7 +672,7 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/LoginScreen.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="301">
-          <caret line="135" column="36" lean-forward="true" selection-start-line="131" selection-start-column="19" selection-end-line="135" selection-end-column="36" />
+          <caret line="135" column="36" selection-start-line="131" selection-start-column="19" selection-end-line="135" selection-end-column="36" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#4632#11062#0" expanded="true" />
@@ -692,7 +684,7 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/RegisterActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="293">
-          <caret line="76" column="47" lean-forward="true" selection-start-line="76" selection-start-column="47" selection-end-line="76" selection-end-column="47" />
+          <caret line="76" column="47" selection-start-line="76" selection-start-column="47" selection-end-line="76" selection-end-column="47" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
