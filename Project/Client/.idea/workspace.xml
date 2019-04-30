@@ -69,16 +69,7 @@
     <last-search-timestamp>1556498835796</last-search-timestamp>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4cf60e8-85f6-432e-bb77-df374ac57bc1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/EnterScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/EnterScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/LoginScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/LoginScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/RegisterActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/RegisterActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/enter_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/enter_screen.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/McServer/backendapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/McServer/backendapp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/McServer/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/McServer/db.sqlite3" afterDir="false" />
-    </list>
+    <list default="true" id="b4cf60e8-85f6-432e-bb77-df374ac57bc1" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +125,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/EnterScreen.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="409">
@@ -180,7 +171,7 @@
           <provider editor-type-id="android-designer2" />
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/LoginScreen.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="66">
@@ -719,22 +710,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/EnterScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="59" column="49" selection-start-line="59" selection-start-column="49" selection-end-line="59" selection-end-column="49" />
-          <folding>
-            <element signature="e#2257#2264#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/LoginScreen.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="66">
           <caret line="284" column="43" selection-start-line="284" selection-start-column="43" selection-end-line="284" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cse535/brainid/EnterScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="409">
+          <caret line="59" column="49" selection-start-line="59" selection-start-column="49" selection-end-line="59" selection-end-column="49" />
+          <folding>
+            <element signature="e#2257#2264#0" expanded="true" />
           </folding>
         </state>
       </provider>
