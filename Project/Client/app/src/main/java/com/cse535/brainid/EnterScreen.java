@@ -34,7 +34,7 @@ public class EnterScreen extends Activity {
 
     String Classifier, FileName, server, executionTime;
     double accuracy;
-    TextView result1, result2, result3, result4, result5, result6, result7, result8;
+    TextView result1, result2, result3, result4, result5, result6, result7, result8, result9;
 
     private void chartBarGraph(AuthenticationHistory ah) {
         BarChart chart = (BarChart) findViewById(R.id.classifer_bar);
@@ -99,6 +99,7 @@ public class EnterScreen extends Activity {
         result6 = findViewById(R.id.tvResult6);
         result7 = findViewById(R.id.tvResult7);
         result8 = findViewById(R.id.tvResult8);
+        result9 = findViewById(R.id.tvResult9);
 
         Intent calledActivity = getIntent();
         Classifier = calledActivity.getExtras().getString("classifier");
@@ -114,6 +115,7 @@ public class EnterScreen extends Activity {
         result5.setText("Execution Time: " + executionTime+" ms");
         result6.setText("Server: " + server);
         result7.setText("Battery Used: " + batteryDiff);
+        result9.setText("Authentication Result: " + calledActivity.getStringExtra("Result"));
         Realm realm = Realm.getDefaultInstance();
         AuthenticationHistory ah = Constants.getAhObject(realm);
         chartBarGraph(ah);

@@ -29,6 +29,9 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -184,10 +187,17 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                                 if (statusCode == 200) {
+                                    String authResult = "";
                                     AuthenticationHistory ah = Constants.getAhObject(realm);
                                     realm.beginTransaction();
+                                    try {
+                                        JSONObject jObject = new JSONObject(new String(responseBody));
+                                        accuracy = jObject.getDouble("accuracy");
+                                        authResult = jObject.getString("status");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
 
-                                    accuracy = Double.parseDouble(new String(responseBody));
                                     ah.addAccuracy(accuracy);
                                     if (dialog.isShowing()) {
                                         dialog.dismiss();
@@ -207,6 +217,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                                     i.putExtra("server", choice);
                                     i.putExtra("executionTime", Double.toString(timer));
                                     i.putExtra("InitBattery", batLevel);
+                                    i.putExtra("Result", authResult);
                                     if (cloudLatency > fogLatency) {
                                         i.putExtra("networkDelay", fogLatency);
                                     } else {
