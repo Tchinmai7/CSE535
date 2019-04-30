@@ -41,4 +41,5 @@ class RegisterView(APIView):
         return HttpResponse(random.uniform(65.5, 70.2))
 
 class LatencyTest(APIView):
-    return Response("Success", status=status.HTTP_200_OK)
+    def get(self, request):
+        return Response("Success", status=status.HTTP_200_OK)
