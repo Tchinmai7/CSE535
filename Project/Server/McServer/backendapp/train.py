@@ -41,6 +41,7 @@ def FeaturesFromDir(directory):
     # This is only to check how many label are used this time of training
     labelDict = {}
     arr = []
+    print(os.getcwd())
     for path, subdirs, files in os.walk(directory):
         for name in files:
             arr.append(os.path.join(path, name))
@@ -48,7 +49,6 @@ def FeaturesFromDir(directory):
 
     for fileFullPath in arr:
         fileName = os.path.basename(fileFullPath)
-        print(fileName)
         # use the file name for the label
         ID = int(fileName[1:4])
         featureSet = FeatureExtFromEdf(fileFullPath)
@@ -92,14 +92,14 @@ def writeFiles(directory):
     data, labels  = FeaturesFromDir(directory)
     train_data, test_data, train_labels, test_labels = train_test_split(data, labels, test_size = 0.1, random_state = 42)
     results = {}
-    #results["SVM"] = writeSvm(directory, train_data, test_data, train_labels, test_labels)
-    #results["KNN"] = writeknn(directory, train_data, test_data, train_labels, test_labels)
+    results["SVM"] = writeSvm(directory, train_data, test_data, train_labels, test_labels)
+    results["KNN"] = writeknn(directory, train_data, test_data, train_labels, test_labels)
     results["SGD"] = writeSGD(directory, train_data, test_data, train_labels, test_labels)
-    #results["Naive-Bayes"] = writeNaiveBayes(directory, train_data, test_data, train_labels, test_labels)
+    results["Naive-Bayes"] = writeNaiveBayes(directory, train_data, test_data, train_labels, test_labels)
     print(results)
     with open(directory + os.sep + 'results.json', 'w') as fp:
         json.dump(results, fp)
 
 if  __name__ == "__main__":
-    directory = '/home/ubuntu/CSE535/Project/Server/data/'
+    directory = 'data'
     writeFiles(directory)

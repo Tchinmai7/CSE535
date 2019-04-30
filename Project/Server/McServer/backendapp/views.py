@@ -8,8 +8,10 @@ from .serializers import LoginSerializer, RegisterSerializer
 from .driver import authUser
 import random
 
+
 class LoginView(APIView):
     parser_class = (FileUploadParser,)
+
     def post(self, request, *args, **kwargs):
         file_serializer = LoginSerializer(data=request.data)
         if file_serializer.is_valid():
@@ -21,8 +23,10 @@ class LoginView(APIView):
     def get(self, request):
         return HttpResponse(random.uniform(65.5, 70.2))
 
+
 class RegisterView(APIView):
     parser_class = (FileUploadParser,)
+
     def post(self, request, *args, **kwargs):
         file_serializer = RegisterSerializer(data=request.data)
         if file_serializer.is_valid():
@@ -30,10 +34,12 @@ class RegisterView(APIView):
             print(file_serializer.data)
             return Response("Success", status=status.HTTP_200_OK)
         else:
+            print(file_serializer.errors)
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
         return HttpResponse(random.uniform(65.5, 70.2))
+
 
 class LatencyTest(APIView):
     def get(self, request):
