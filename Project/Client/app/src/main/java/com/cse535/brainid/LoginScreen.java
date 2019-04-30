@@ -6,6 +6,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.BatteryManager;
@@ -44,7 +47,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
     EditText user_name;
     File root,selected_File;
     TextView cloudLatencyTV;
-    TextView fogLatencyTV;
+    TextView fogLatencyTV, serverChoiceTV;
     Spinner classifiername, fileName;
     public double accuracy = 0;
     public double cloudLatency, fogLatency;
@@ -54,7 +57,6 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-
     int batLevel;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
 
         cloudLatencyTV = findViewById(R.id.cloud_latency);
         fogLatencyTV = findViewById(R.id.fog_latency);
-
+        serverChoiceTV = findViewById(R.id.serverChoice);
         classifiername = findViewById(R.id.class_spinner);
         fileName = findViewById(R.id.file_spinner);
 
@@ -116,99 +118,115 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
             public void onClick(View v) {
                 fogLatencyTV.setText("");
                 cloudLatencyTV.setText("");
+                serverChoiceTV.setText("");
                 res = "";
                 final ProgressDialog dialog = new ProgressDialog(LoginScreen.this);
                 final long startTimer;
-
-                if (fileName.getSelectedItem() == null) {
+                if (user_name.getText().toString().equals("")) {
                     new AlertDialog.Builder(LoginScreen.this)
                             .setTitle("Error!")
-                            .setMessage("Select a file")
+                            .setMessage("Enter a userName")
                             .setPositiveButton(android.R.string.ok, null)
                             .show();
-                }  else {
-                    AuthenticationHistory ah = Constants.getAhObject(realm);
-                    realm.beginTransaction();
-                    ah.addCloudLatency(cloudLatency);
-                    ah.addFogLatency(fogLatency);
-                    ah.addAuthAttempt();
-                    boolean choice_of_server = useCloudServer();
-                    String server_url;
-                    if (choice_of_server) {
-                        Log.e("Register", "Using Cloud Server");
-                        server_url = Constants.cloudServer;
-                        ah.addNumCloud();
-                        choice = "Cloud";
+                } else if (!Constants.isValidUserName(user_name.getText().toString())) {
+                    new AlertDialog.Builder(LoginScreen.this)
+                            .setTitle("Error!")
+                            .setMessage("Invalid Username. Only S001 - S109 allowed.")
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show();
+                } else {
+                    if (fileName.getSelectedItem() == null) {
+                        new AlertDialog.Builder(LoginScreen.this)
+                                .setTitle("Error!")
+                                .setMessage("Select a file")
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show();
                     } else {
-                        server_url = Constants.fogServer;
-                        ah.addNumFog();
-                        choice = "Fog";
-                    }
-                    realm.copyToRealm(ah);
-                    realm.commitTransaction();
+                        AuthenticationHistory ah = Constants.getAhObject(realm);
+                        realm.beginTransaction();
+                        ah.addCloudLatency(cloudLatency);
+                        ah.addFogLatency(fogLatency);
+                        ah.addAuthAttempt();
+                        boolean choice_of_server = useCloudServer(ah);
 
-                    startTimer = System.currentTimeMillis();
-                    dialog.setTitle("Login Loader");
-                    dialog.setMessage("Authenticating......");
-                    dialog.show();
+                        String server_url;
+                        if (choice_of_server) {
+                            Log.e("Register", "Using Cloud Server");
+                            server_url = Constants.cloudServer;
+                            ah.addNumCloud();
+                            choice = "Cloud";
+                            serverChoiceTV.setText("Choosing Cloud Server");
+                        } else {
+                            server_url = Constants.fogServer;
+                            ah.addNumFog();
+                            choice = "Fog";
+                            serverChoiceTV.setText("Choosing Fog Server");
 
-                    AsyncHttpClient client_logs = new AsyncHttpClient();
-                    RequestParams params = new RequestParams();
-                    try {
-                        params.put("ClassifierName", classChoice);
-                        params.put("UserName", user_name.getText().toString());
-                        params.put("UserSignalFile", selected_File);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    client_logs.post(server_url + "/login", params, new AsyncHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            if (statusCode == 200) {
-                                AuthenticationHistory ah = Constants.getAhObject(realm);
-                                realm.beginTransaction();
+                        }
+                        realm.copyToRealm(ah);
+                        realm.commitTransaction();
 
-                                accuracy = Double.parseDouble(new String(responseBody));
-                                ah.addAccuracy(accuracy);
-                                if (dialog.isShowing()) {
-                                    dialog.dismiss();
-                                }
-                                double timer = System.currentTimeMillis() - startTimer;
-                                ah.addClassifier(classifiername.getSelectedItem().toString());
-                                if ("cloud".equals(choice)) {
-                                    ah.addCloudExecutionTime(timer);
-                                } else {
-                                    ah.addFogExecutionTime(timer);
-                                }
+                        startTimer = System.currentTimeMillis();
+                        dialog.setTitle("Login Loader");
+                        dialog.setMessage("Authenticating......");
+                        dialog.show();
 
-                                Intent i = new Intent(LoginScreen.this, EnterScreen.class);
-                                i.putExtra("classifier", classifiername.getSelectedItem().toString());
-                                i.putExtra("filename", fileName.getSelectedItem().toString());
-                                i.putExtra("accuracy", accuracy);
-                                i.putExtra("server", choice);
-                                i.putExtra("executionTime", Double.toString(timer));
-                                i.putExtra("InitBattery", batLevel);
-                                if (cloudLatency > fogLatency) {
-                                    i.putExtra("networkDelay",fogLatency);
-                                }
-                                else {
-                                    i.putExtra("networkDelay",cloudLatency);
-                                }
-                                realm.copyToRealm(ah);
-                                realm.commitTransaction();
-                                startActivity(i);
+                        AsyncHttpClient client_logs = new AsyncHttpClient();
+                        RequestParams params = new RequestParams();
+                        try {
+                            params.put("ClassifierName", classChoice);
+                            params.put("UserName", user_name.getText().toString());
+                            params.put("UserSignalFile", selected_File);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        client_logs.post(server_url + "/login", params, new AsyncHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                if (statusCode == 200) {
+                                    AuthenticationHistory ah = Constants.getAhObject(realm);
+                                    realm.beginTransaction();
+
+                                    accuracy = Double.parseDouble(new String(responseBody));
+                                    ah.addAccuracy(accuracy);
+                                    if (dialog.isShowing()) {
+                                        dialog.dismiss();
+                                    }
+                                    double timer = System.currentTimeMillis() - startTimer;
+                                    ah.addClassifier(classifiername.getSelectedItem().toString());
+                                    if ("cloud".equals(choice)) {
+                                        ah.addCloudExecutionTime(timer);
+                                    } else {
+                                        ah.addFogExecutionTime(timer);
+                                    }
+
+                                    Intent i = new Intent(LoginScreen.this, EnterScreen.class);
+                                    i.putExtra("classifier", classifiername.getSelectedItem().toString());
+                                    i.putExtra("filename", fileName.getSelectedItem().toString());
+                                    i.putExtra("accuracy", accuracy);
+                                    i.putExtra("server", choice);
+                                    i.putExtra("executionTime", Double.toString(timer));
+                                    i.putExtra("InitBattery", batLevel);
+                                    if (cloudLatency > fogLatency) {
+                                        i.putExtra("networkDelay", fogLatency);
+                                    } else {
+                                        i.putExtra("networkDelay", cloudLatency);
+                                    }
+                                    realm.copyToRealm(ah);
+                                    realm.commitTransaction();
+                                    startActivity(i);
+                                } else
+                                    Toast.makeText(LoginScreen.this, "Server Error", Toast.LENGTH_SHORT).show();
                             }
-                            else
-                                Toast.makeText(LoginScreen.this, "Server Error", Toast.LENGTH_SHORT).show();
-                        }
 
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                            Log.e("Login", new String(responseBody));
-                            Toast.makeText(LoginScreen.this, "Error with Request", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                                Log.e("Login", new String(responseBody));
+                                Toast.makeText(LoginScreen.this, "Error with Request", Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
+                    }
                 }
             }
         });
@@ -223,9 +241,25 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
 
     }
 
-    private boolean useCloudServer() {
-        Log.e("Login", cloudLatency + "," +fogLatency);
+    private boolean useCloudServer(AuthenticationHistory ah) {
+        if (cloudLatency <= Long.MAX_VALUE && fogLatency <= Long.MAX_VALUE) {
+            // Both servers are up.
+            Double cloud_avg = getAverage(ah.getCloudExecutionTimes());
+            Double fog_avg = getAverage(ah.getFogExecutionTimes());
+            return (cloudLatency <= fogLatency) && (cloud_avg <= fog_avg);
+        }
         return cloudLatency <= fogLatency;
+    }
+
+    public static double getAverage(List<Double> list) {
+        Double sum = 0.0;
+        if(!list.isEmpty()) {
+            for (Double val : list) {
+                sum += val;
+            }
+            return sum / list.size();
+        }
+        return sum;
     }
 
     public static boolean hasPermissions(Context context, String... permissions) {

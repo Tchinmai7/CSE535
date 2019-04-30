@@ -70,7 +70,14 @@ public class RegisterActivity extends AppCompatActivity {
                                 .setMessage("Please Enter Username")
                                 .setPositiveButton(android.R.string.ok, null)
                                 .show();
-                    } else {
+                    } else if (!Constants.isValidUserName(username)) {
+                        new AlertDialog.Builder(RegisterActivity.this)
+                                .setTitle("Error!")
+                                .setMessage("Invalid Username. Only S001 - S109 allowed.")
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show();
+                    }
+                    else {
                         final File f = new File(filesrc);
                         Log.e("REGISTER", filesrc);
                         AsyncHttpClient client_logs = new AsyncHttpClient();
