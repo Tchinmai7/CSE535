@@ -1,5 +1,5 @@
 import random
-from test import testEdf
+from .test import testEdf
 import json
 def authUser(user):
     file_path = user["UserSignalFile"].path

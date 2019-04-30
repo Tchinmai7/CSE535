@@ -7,7 +7,7 @@ import pickle
 import numpy as np
 from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
-from train import FeatureExtFromEdf
+from .train import FeatureExtFromEdf
 
 PROBABILITY_THRESHOLD = 0.5
 
