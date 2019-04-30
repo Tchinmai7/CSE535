@@ -12,8 +12,7 @@ from train import FeatureExtFromEdf
 PROBABILITY_THRESHOLD = 0.5
 
 
-def testEdf(fileFullPath,model_file):
-
+def testEdf(fileFullPath, model_file):
     # Load edf file
     brainActList = []
     featureSet = FeatureExtFromEdf(fileFullPath)
@@ -24,9 +23,14 @@ def testEdf(fileFullPath,model_file):
         clf = pickle.load(pickleFile)
 
     predList = clf.predict(brainActList)
-
     return predList[0]
 
-
-#x = testEdf("S010R13.edf","randomForestModel.dat")
-#print(x)
+if __name__ == "__main__":
+    x = testEdf("/home/ubuntu/CSE535/Project/Server/data/S002/S002R13.edf","/home/ubuntu/CSE535/Project/Server/McServer/trained_models/SGD.dat")
+    print(x)
+    x = testEdf("/home/ubuntu/CSE535/Project/Server/data/S001/S001R13.edf","/home/ubuntu/CSE535/Project/Server/McServer/trained_models/knnModel.dat")
+    print(x)
+    x = testEdf("/home/ubuntu/CSE535/Project/Server/data/S001/S001R13.edf","/home/ubuntu/CSE535/Project/Server/McServer/trained_models/naiveBayesModel.dat")
+    print(x)
+    x = testEdf("/home/ubuntu/CSE535/Project/Server/data/S001/S001R13.edf","/home/ubuntu/CSE535/Project/Server/McServer/trained_models/svmModel.dat")
+    print(x)

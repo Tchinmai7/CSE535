@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import SGDClassifier
 from sklearn.naive_bayes import MultinomialNB
 import json
 
@@ -71,14 +71,14 @@ def writeknn(directory, train_data, test_data, train_labels, test_labels):
     classifier.fit(train_data, train_labels)
     with open(directory + os.sep + 'knnModel.dat', 'wb') as pickleFile:
         pickle.dump(classifier, pickleFile)
-    return (classifer.score(test_data, test_labels) * 100)
+    return (classifier.score(test_data, test_labels) * 100)
 
-def writeRandomForest(directory, train_data, test_data, train_labels, test_labels):
-    regressor = RandomForestRegressor(n_estimators=20, random_state=0)
-    regressor.fit(train_data, train_labels)
-    with open(directory + os.sep + 'randomForestModel.dat', 'wb') as pickleFile:
-        pickle.dump(regressor, pickleFile)
-    return (regressor.score(test_data, test_labels) * 100)
+def writeSGD(directory, train_data, test_data, train_labels, test_labels):
+    clf = SGDClassifier(loss="hinge", penalty="l2", max_iter=5)
+    clf.fit(train_data, train_labels)
+    with open(directory + os.sep + 'SGD.dat', 'wb') as pickleFile:
+        pickle.dump(clf, pickleFile)
+    return (clf.score(test_data, test_labels) * 100)
 
 
 def writeNaiveBayes(directory, train_data, test_data, train_labels, test_labels):
@@ -92,13 +92,14 @@ def writeFiles(directory):
     data, labels  = FeaturesFromDir(directory)
     train_data, test_data, train_labels, test_labels = train_test_split(data, labels, test_size = 0.1, random_state = 42)
     results = {}
-    results["SVM"] = writeSvm(directory, train_data, test_data, train_labels, test_labels)
-    results["KNN"] = writeknn(directory, train_data, test_data, train_labels, test_labels)
-    results["RandomForest"] = writeRandomForest(directory, train_data, test_data, train_labels, test_labels)
-    results["Naive-Bayes"] = writeNaiveBayes(directory, train_data, test_data, train_labels, test_labels)
+    #results["SVM"] = writeSvm(directory, train_data, test_data, train_labels, test_labels)
+    #results["KNN"] = writeknn(directory, train_data, test_data, train_labels, test_labels)
+    results["SGD"] = writeSGD(directory, train_data, test_data, train_labels, test_labels)
+    #results["Naive-Bayes"] = writeNaiveBayes(directory, train_data, test_data, train_labels, test_labels)
     print(results)
     with open(directory + os.sep + 'results.json', 'w') as fp:
         json.dump(results, fp)
 
-directory = '/home/ubuntu/CSE535/Project/Server/data/'
-writeFiles(directory)
+if  __name__ == "__main__":
+    directory = '/home/ubuntu/CSE535/Project/Server/data/'
+    writeFiles(directory)
