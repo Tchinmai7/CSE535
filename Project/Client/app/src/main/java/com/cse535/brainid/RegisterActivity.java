@@ -76,8 +76,8 @@ public class RegisterActivity extends AppCompatActivity {
                         AsyncHttpClient client_logs = new AsyncHttpClient();
                         RequestParams params = new RequestParams();
                         try {
-                            params.put("signal_file", f);
-                            params.put("username", username);
+                            params.put("UserSignalFile", f);
+                            params.put("UserName", username);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
@@ -116,10 +116,11 @@ public class RegisterActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                                 Toast.makeText(RegisterActivity.this, "EEG File could not be uploaded", Toast.LENGTH_SHORT).show();
+                                Log.e("Login", new String(responseBody));
 
                             }
                         });
-                        client_logs.post(Constants.fogServer + "/upload_log_file.php", params, new AsyncHttpResponseHandler() {
+                        client_logs.post(Constants.fogServer + "/register", params, new AsyncHttpResponseHandler() {
 
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -132,7 +133,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                                Toast.makeText(RegisterActivity.this, "EEG File could not be uploaded", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "EEG File could not be uploaded to upload to Register", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

@@ -14,10 +14,10 @@ class LoginView(APIView):
     def post(self, request, *args, **kwargs):
 
         file_serializer = LoginSerializer(data=request.data)
+        print(file_serializer.data)
 
         if file_serializer.is_valid():
             file_serializer.save()
-            print(file_serializer.data)
             return Response(authUser(file_serializer.data), status=status.HTTP_200_OK)
         else:
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -10,13 +10,19 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import io.realm.Realm;
@@ -25,9 +31,47 @@ import io.realm.RealmList;
 
 public class EnterScreen extends Activity {
 
-    String Classifier, FileName, accuracy, server, executionTime;
+    String Classifier, FileName, server, executionTime;
+    double accuracy;
     TextView result1, result2, result3, result4, result5, result6, result7, result8;
 
+    private void chartBarGraph(AuthenticationHistory ah) {
+        BarChart chart = (BarChart) findViewById(R.id.classifer_bar);
+        RealmList<String> classifierChoices = ah.getClassifiersUsed();
+        HashMap<String, Integer> classiferCount = new HashMap<>();
+        for (String s:classifierChoices) {
+            classiferCount.put(s, classiferCount.getOrDefault(s, 0) + 1);
+        }
+        ArrayList<BarEntry> Barentry = new ArrayList<>();
+        HashSet<String> labels = new HashSet<>();
+        float pos = 0f;
+
+        for (Map.Entry<String, Integer> e: classiferCount.entrySet()) {
+            BarEntry be = new BarEntry(pos, e.getValue());
+            pos += 2f;
+            Barentry.add(be);
+            labels.add(e.getKey());
+        }
+
+        BarDataSet dataSet = new BarDataSet(Barentry, "Classifiers");
+        BarData data = new BarData(dataSet);
+        chart.setData(data);
+        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
+        chart.setFitBars(true); // make the x-axis fit exactly all bars
+        chart.invalidate(); // refresh
+    }
+    private void chartLine(List<Double> values, LineChart chart, String title) {
+        List<Entry> entries = new ArrayList<Entry>();
+        Integer i = 0;
+        for (Double v: values) {
+           entries.add(new Entry(i.floatValue(),  v.floatValue()));
+           i ++;
+        }
+        LineDataSet dataSet = new LineDataSet(entries, title);
+        LineData lineData = new LineData(dataSet);
+        chart.setData(lineData);
+        chart.invalidate();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +92,7 @@ public class EnterScreen extends Activity {
         Intent calledActivity = getIntent();
         Classifier = calledActivity.getExtras().getString("classifier");
         FileName =  calledActivity.getExtras().getString("filename");
-        accuracy = calledActivity.getExtras().getString("accuracy");
+        accuracy = calledActivity.getExtras().getDouble("accuracy");
         server = calledActivity.getExtras().getString("server");
         executionTime = calledActivity.getExtras().getString("executionTime");
         int batteryDiff = calledActivity.getExtras().getInt("InitBattery") - batLevel;
@@ -61,33 +105,11 @@ public class EnterScreen extends Activity {
         result7.setText("Battery Used: " + batteryDiff);
         Realm realm = Realm.getDefaultInstance();
         AuthenticationHistory ah = Constants.getAhObject(realm);
-
-        BarChart chart = (BarChart) findViewById(R.id.bar_chart);
-        int numCloud = ah.getNumCloud();
-        Log.e("Sss", numCloud + "");
-        RealmList<String> classifierChoices = ah.getClassifiersUsed();
-        HashMap<String, Integer> classiferCount = new HashMap<>();
-        for (String s:classifierChoices) {
-           classiferCount.put(s, classiferCount.getOrDefault(s, 0) + 1);
-        }
-        ArrayList<BarEntry> Barentry = new ArrayList<>();
-        ArrayList<String> labels = new ArrayList<>();
-        float pos = 0f;
-
-        for (Map.Entry<String, Integer> e: classiferCount.entrySet()) {
-            BarEntry be = new BarEntry(pos, e.getValue());
-            pos += 2f;
-            Barentry.add(be);
-            labels.add(e.getKey());
-        }
-
-        BarDataSet dataSet = new BarDataSet(Barentry, "Classifiers");
-        BarData data = new BarData(dataSet);
-        chart.setData(data);
-        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
-        chart.setFitBars(true); // make the x-axis fit exactly all bars
-        chart.invalidate(); // refresh
-
-
-
-    }}
+        chartBarGraph(ah);
+        chartLine(ah.getAccuracies(), (LineChart) findViewById(R.id.accuracies_line), "Accuracies");
+        chartLine(ah.getCloudExecutionTimes(), (LineChart)findViewById(R.id.cloud_exec_time), "Cloud Exection Time");
+        chartLine(ah.getFogExecutionTimes(), (LineChart)findViewById(R.id.fog_exec_time), "Fog Execution Time");
+        chartLine(ah.getFogLatencies(), (LineChart)findViewById(R.id.fog_latency_line), "Fog Latencies");
+        chartLine(ah.getCloudLatencies(), (LineChart)findViewById(R.id.cloud_latency_line), "Cloud Latencies");
+    }
+}

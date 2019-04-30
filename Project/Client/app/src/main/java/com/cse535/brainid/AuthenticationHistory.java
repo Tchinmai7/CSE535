@@ -10,13 +10,13 @@ public class AuthenticationHistory extends RealmObject {
     private int numCloud;
     private int numFog;
     private int totalAuthAttempts;
-    private RealmList<Integer> accuracies = new RealmList<>();
-    private RealmList<Long> cloudLatencies = new RealmList<>();
-    private RealmList<Long> fogLatencies = new RealmList<>();
+    private RealmList<Double> accuracies = new RealmList<>();
+    private RealmList<Double> cloudLatencies = new RealmList<>();
+    private RealmList<Double> fogLatencies = new RealmList<>();
     private RealmList<Double> fogPower = new RealmList<>();
     private RealmList<Double> cloudPower = new RealmList<>();
-    private RealmList<Long> cloudExecutionTimes = new RealmList<>();
-    private RealmList<Long> fogExecutionTimes = new RealmList<>();
+    private RealmList<Double> cloudExecutionTimes = new RealmList<>();
+    private RealmList<Double> fogExecutionTimes = new RealmList<>();
     private RealmList<String> classifiersUsed = new RealmList<>();
 
     public RealmList<String> getClassifiersUsed() {
@@ -59,35 +59,35 @@ public class AuthenticationHistory extends RealmObject {
     public void addAuthAttempt() {
         this.totalAuthAttempts += 1;
     }
-    public List<Integer> getAccuracies() {
+    public List<Double> getAccuracies() {
         return accuracies;
     }
 
-    public void setAccuracies(int accuracy) {
+    public void setAccuracies(double accuracy) {
         this.accuracies.add(accuracy);
     }
-    public void addAccuracy(int accuracy) {
+    public void addAccuracy(double accuracy) {
         this.accuracies.add(accuracy);
     }
-    public List<Long> getCloudLatencies() {
+    public List<Double> getCloudLatencies() {
         return cloudLatencies;
     }
 
-    public void setCloudLatencies(RealmList<Long> cloudLatencies) {
+    public void setCloudLatencies(RealmList<Double> cloudLatencies) {
         this.cloudLatencies = cloudLatencies;
     }
-    public void addCloudLatency(Long latency) {
+    public void addCloudLatency(Double latency) {
         this.cloudLatencies.add(latency);
     }
-    public List<Long> getFogLatencies() {
+    public List<Double> getFogLatencies() {
         return fogLatencies;
     }
 
-    public void setFogLatencies(RealmList<Long> fogLatencies) {
+    public void setFogLatencies(RealmList<Double> fogLatencies) {
         this.fogLatencies = fogLatencies;
     }
 
-    public void addFogLatency(Long latency) {
+    public void addFogLatency(Double latency) {
         this.fogLatencies.add(latency);
     }
 
@@ -112,25 +112,25 @@ public class AuthenticationHistory extends RealmObject {
     public void addCloudPower(Double power) {
         this.cloudPower.add(power);
     }
-    public List<Long> getCloudExecutionTimes() {
+    public List<Double> getCloudExecutionTimes() {
         return cloudExecutionTimes;
     }
 
-    public void setCloudExecutionTimes(RealmList<Long> cloudExecutionTimes) {
+    public void setCloudExecutionTimes(RealmList<Double> cloudExecutionTimes) {
         this.cloudExecutionTimes = cloudExecutionTimes;
     }
-    public void addCloudExecutionTime(Long e) {
+    public void addCloudExecutionTime(Double e) {
         this.cloudExecutionTimes.add(e);
     }
 
-    public List<Long> getFogExecutionTimes() {
+    public List<Double> getFogExecutionTimes() {
         return fogExecutionTimes;
     }
 
-    public void setFogExecutionTimes(RealmList<Long> fogExecutionTimes) {
+    public void setFogExecutionTimes(RealmList<Double> fogExecutionTimes) {
         this.fogExecutionTimes = fogExecutionTimes;
     }
-    public void addFogExecutionTime(Long e) {
+    public void addFogExecutionTime(Double e) {
         this.fogExecutionTimes.add(e);
     }
 }

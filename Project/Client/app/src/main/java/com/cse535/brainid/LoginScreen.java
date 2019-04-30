@@ -28,14 +28,12 @@ import com.loopj.android.http.RequestParams;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class LoginScreen extends Activity implements AdapterView.OnItemSelectedListener {
 
@@ -48,8 +46,8 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
     TextView cloudLatencyTV;
     TextView fogLatencyTV;
     Spinner classifiername, fileName;
-    public int accuracy = 0;
-    public static long cloudLatency, fogLatency;
+    public double accuracy = 0;
+    public static double cloudLatency, fogLatency;
     String res = "";
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
@@ -156,9 +154,9 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                     AsyncHttpClient client_logs = new AsyncHttpClient();
                     RequestParams params = new RequestParams();
                     try {
-                        params.put("classifier", classChoice);
-                        params.put("username", user_name.getText().toString());
-                        params.put("signalFile", selected_File);
+                        params.put("ClassifierName", classChoice);
+                        params.put("UserName", user_name.getText().toString());
+                        params.put("UserSignalFile", selected_File);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -169,13 +167,12 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                                 AuthenticationHistory ah = Constants.getAhObject(realm);
                                 realm.beginTransaction();
 
-                                // accuracy = Integer.parseInt(new String(responseBody));
-                                accuracy = 80;
+                                accuracy = Double.parseDouble(new String(responseBody));
                                 ah.addAccuracy(accuracy);
                                 if (dialog.isShowing()) {
                                     dialog.dismiss();
                                 }
-                                long timer = System.currentTimeMillis() - startTimer;
+                                double timer = System.currentTimeMillis() - startTimer;
                                 ah.addClassifier(classifiername.getSelectedItem().toString());
                                 if ("cloud".equals(choice)) {
                                     ah.addCloudExecutionTime(timer);
@@ -188,7 +185,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                                 i.putExtra("filename", fileName.getSelectedItem().toString());
                                 i.putExtra("accuracy", accuracy);
                                 i.putExtra("server", choice);
-                                i.putExtra("executionTime", Long.toString(timer));
+                                i.putExtra("executionTime", Double.toString(timer));
                                 i.putExtra("InitBattery", batLevel);
                                 if (cloudLatency > fogLatency) {
                                     i.putExtra("networkDelay",fogLatency);
@@ -206,6 +203,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                            Log.e("Login", new String(responseBody));
                             Toast.makeText(LoginScreen.this, "Error with Request", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -277,10 +275,10 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
-    private long measureLatency(String url, final boolean isCloud) {
+    private double measureLatency(String url, final boolean isCloud) {
         AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
         final long startTime = System.currentTimeMillis();
-        final long[] latency = new long[1];
+        final double[] latency = new double[1];
         asyncHttpClient.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
