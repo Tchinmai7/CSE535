@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     int PERMISSION_CODE = 1;
     int READ_REQUEST_CODE = 2;
     String filesrc;
-    TextView metrics, result;
+    TextView metrics, result, pcmetricsTV, filenameTV;
     VideoView videoView;
      ProgressDialog dialog;
     @Override
@@ -45,16 +46,43 @@ public class MainActivity extends AppCompatActivity {
         Button fileButton = findViewById(R.id.fileButton);
         fileButton.setOnClickListener(v -> performFileSearch());
         metrics = findViewById(R.id.metricsTv);
+        pcmetricsTV =findViewById(R.id.pcmetricsTV);
         result = findViewById(R.id.resultTV);
+        filenameTV = findViewById(R.id.fileName);
         dialog = new ProgressDialog(MainActivity.this);
+        videoView = findViewById(R.id.actualVideo);
+        Button classifButton  = findViewById(R.id.classifyButton);
+        classifButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.setTitle("Classifying");
+                dialog.setMessage("Loading....");
+                dialog.show();
+                String resultVal = classifyFile(filesrc);
+                Log.e("Result", resultVal);
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                pcmetricsTV.setVisibility(View.VISIBLE);
+                videoView.setVisibility(View.VISIBLE);
+                videoView.start();
+                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        mp.start();
+                    }
+                });
+                metrics.setText(resultVal);
+            }
+        });
 
     }
 
     public void performFileSearch() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/csv");
-        //intent.setType("*/*");
+        //intent.setType("text/csv");
+        intent.setType("*/*");
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
@@ -65,14 +93,8 @@ public class MainActivity extends AppCompatActivity {
             Uri content_describer = data.getData();
             if (content_describer != null) {
                 filesrc = FileUtils.getRealPath(MainActivity.this, content_describer);
+                filenameTV.setText(filesrc);
                 Log.e("Selected File", filesrc);
-                dialog.setTitle("Classifying");
-                dialog.setMessage("Loading....");
-                String resultVal = classifyFile(filesrc);
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                    metrics.setText(resultVal);
-                }
             }
         }
     }
@@ -86,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
 
     private String classifyFile(String fileName) {
         File csv = new File(fileName);
+        String resultVal = "";
         try {
             CSVReader reader =  new CSVReaderBuilder(new FileReader(csv.getAbsolutePath())).build();
             long startTime = System.currentTimeMillis();
             int num_about = 0;
             int num_father = 0;
-            int num_error = 0;
             int num_rows = 0;
             String about = "About";
             String father = "Father";
@@ -106,31 +128,33 @@ public class MainActivity extends AppCompatActivity {
                     num_about ++;
                 } else if (result == 1) {
                     num_father ++;
-                } else {
-                    num_error ++;
                 }
                 row = reader.readNext();
             }
             long endTime = System.currentTimeMillis();
             String decision = "Classification Result is : ";
             float accuracy = 0.0f;
-            String aboutpath = "android.resource://" + getPackageName() + "/R.raw._about.mp4";
-            String fatherPath = "android.resource://" + getPackageName() + "/R.raw._father.mp4";
+            String aboutpath = "android.resource://" + getPackageName() + "/" + R.raw._about;
+            String fatherPath = "android.resource://" + getPackageName() + "/" + R.raw._father;
             if (num_about  > num_father) {
                 decision = decision + about;
                 accuracy = ((float)num_about / num_rows) * 100;
                 videoView.setVideoURI(Uri.parse(aboutpath));
+                Log.e("Path", aboutpath);
             } else {
                 decision = decision + father;
                 accuracy = ((float)num_father / num_rows) * 100;
+                Log.e("Path", fatherPath);
                 videoView.setVideoURI(Uri.parse(fatherPath));
             }
+            Log.e("decision", decision);
             result.setText(decision);
-            return "The accuracy of the calculation is : "  + accuracy + " and the prediction using Decision Tree took " + (endTime - startTime) + " ms";
+            resultVal = "The accuracy of the calculation is : "  + accuracy + " and the prediction using Decision Tree took " + (endTime - startTime) + " ms";
         } catch (Exception e) {
-            e.printStackTrace();
-            return "Error occured during Classification";
+            Log.e("Error", e.getMessage());
+            resultVal = "Error occured during Classification";
         }
+        return resultVal;
     }
     private float[] cleanRow(String[] line) {
         int[] indexes = new int[] {4,5,7,8,10,11,13,14,16,17,19,20,22,23,25,26,28,29,31,32,34,35};

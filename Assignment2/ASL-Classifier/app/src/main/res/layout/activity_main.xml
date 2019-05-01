@@ -18,25 +18,31 @@
         android:textColor="@color/colorPrimaryDark"
         android:id="@+id/titleTV"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Choose the input CSV File"
-        android:layout_marginTop="10dp"
-        android:textSize="20sp"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:id="@+id/filePickerTv"
-        android:layout_below="@+id/titleTV"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fileButton"
         android:layout_marginTop="10dp"
         android:textAlignment="center"
-
-        android:layout_below="@+id/filePickerTv"
-        android:text="Select File"/>
+        android:layout_below="@+id/titleTV"
+        android:text="Choose the input CSV File"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fileName"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_below="@+id/fileButton"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/classifyButton"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
+        android:layout_below="@+id/fileName"
+        android:text="Start Classification"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,7 +51,7 @@
         android:textSize="20sp"
         android:textColor="@color/colorPrimaryDark"
         android:id="@+id/resultTV"
-        android:layout_below="@+id/fileButton"
+        android:layout_below="@+id/classifyButton"
         />
     <TextView
         android:layout_width="match_parent"
@@ -55,6 +61,7 @@
         android:layout_below="@+id/resultTV"
         android:textSize="20sp"
         android:layout_marginTop="10dp"
+        android:visibility="gone"
         android:textAlignment="center"
         android:text="Time taken to train on PC - 47.4716ms. Time taken to test on PC was 1.95ms. Accuracy of Classifier is 98.9683%"/>
     <TextView
@@ -67,9 +74,10 @@
         android:id="@+id/metricsTv"
         android:layout_below="@+id/pcmetricsTV"/>
     <VideoView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:id="@+id/actualVideo"
+        android:layout_margin="10dp"
         android:visibility="gone"
         android:layout_below="@+id/metricsTv"
         />
