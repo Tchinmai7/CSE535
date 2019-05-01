@@ -1,6 +1,7 @@
 package com.cse535.aslclassifier;
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,9 +29,10 @@ public class MainActivity extends AppCompatActivity {
     int PERMISSION_CODE = 1;
     int READ_REQUEST_CODE = 2;
     String filesrc;
-    TextView metrics, result, pcmetricsTV, filenameTV;
+    TextView metrics, result, pcmetricsTV, filenameTV, resultTitle, videoTitle, mobileTitle, pcTitle;
     VideoView videoView;
-     ProgressDialog dialog;
+    Button classifButton;
+    ProgressDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,10 +53,24 @@ public class MainActivity extends AppCompatActivity {
         filenameTV = findViewById(R.id.fileName);
         dialog = new ProgressDialog(MainActivity.this);
         videoView = findViewById(R.id.actualVideo);
-        Button classifButton  = findViewById(R.id.classifyButton);
+        resultTitle = findViewById(R.id.classResults);
+        videoTitle = findViewById(R.id.videotitle);
+        mobileTitle = findViewById(R.id.mobileTitle);
+
+        pcTitle = findViewById(R.id.pcTitle);
+        String pcmetrics = "Training Time: 47.4716ms \n Prediction Time: 1.95ms \n Accuracy of Classifier: 98.9683%";
+        pcmetricsTV.setText(pcmetrics);
+        classifButton  = findViewById(R.id.classifyButton);
         classifButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if ("".equals(filesrc)) {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Error!")
+                            .setMessage("Select a file")
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show();
+                }
                 dialog.setTitle("Classifying");
                 dialog.setMessage("Loading....");
                 dialog.show();
@@ -65,13 +81,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 pcmetricsTV.setVisibility(View.VISIBLE);
                 videoView.setVisibility(View.VISIBLE);
+                mobileTitle.setVisibility(View.VISIBLE);
+                pcTitle.setVisibility(View.VISIBLE);
+                resultTitle.setVisibility(View.VISIBLE);
+                videoTitle.setVisibility(View.VISIBLE);
                 videoView.start();
-                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        mp.start();
-                    }
-                });
+                videoView.setOnCompletionListener(MediaPlayer::start);
                 metrics.setText(resultVal);
             }
         });
@@ -92,8 +107,9 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri content_describer = data.getData();
             if (content_describer != null) {
+                classifButton.setVisibility(View.VISIBLE);
                 filesrc = FileUtils.getRealPath(MainActivity.this, content_describer);
-                filenameTV.setText(filesrc);
+                filenameTV.setText("The File Selected is : " + filesrc);
                 Log.e("Selected File", filesrc);
             }
         }
@@ -132,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 row = reader.readNext();
             }
             long endTime = System.currentTimeMillis();
-            String decision = "Classification Result is : ";
+            String decision = "The Detected Video is: ";
             float accuracy = 0.0f;
             String aboutpath = "android.resource://" + getPackageName() + "/" + R.raw._about;
             String fatherPath = "android.resource://" + getPackageName() + "/" + R.raw._father;
@@ -149,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
             }
             Log.e("decision", decision);
             result.setText(decision);
-            resultVal = "The accuracy of the calculation is : "  + accuracy + " and the prediction using Decision Tree took " + (endTime - startTime) + " ms";
+            resultVal = "Prediction Time: " + (endTime - startTime) + " ms\n Confidence: " + accuracy + "\n";
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
             resultVal = "Error occured during Classification";

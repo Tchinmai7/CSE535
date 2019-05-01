@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ASL Classifier using Decision Tree"
-        android:textSize="20sp"
+        android:textSize="30sp"
+        android:textStyle="bold"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:id="@+id/titleTV"/>
@@ -25,13 +26,13 @@
         android:layout_marginTop="10dp"
         android:textAlignment="center"
         android:layout_below="@+id/titleTV"
+        android:layout_centerHorizontal="true"
         android:text="Choose the input CSV File"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fileName"
         android:textSize="20sp"
-        android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:layout_below="@+id/fileButton"/>
     <Button
@@ -40,8 +41,22 @@
         android:id="@+id/classifyButton"
         android:layout_marginTop="10dp"
         android:textAlignment="center"
+        android:layout_centerHorizontal="true"
         android:layout_below="@+id/fileName"
+        android:visibility="gone"
         android:text="Start Classification"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Classification Results:"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:visibility="gone"
+        android:layout_below="@id/classifyButton"
+        android:id="@+id/classResults"
         />
     <TextView
         android:layout_width="match_parent"
@@ -51,19 +66,44 @@
         android:textSize="20sp"
         android:textColor="@color/colorPrimaryDark"
         android:id="@+id/resultTV"
-        android:layout_below="@+id/classifyButton"
+        android:layout_below="@+id/classResults"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pcTitle"
+        android:text="PC Results:"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        android:layout_below="@+id/resultTV"
+        android:textColor="@color/colorPrimaryDark"
+        android:visibility="gone"
         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/colorPrimaryDark"
         android:id="@+id/pcmetricsTV"
-        android:layout_below="@+id/resultTV"
+        android:layout_below="@+id/pcTitle"
         android:textSize="20sp"
+        android:minLines="3"
         android:layout_marginTop="10dp"
         android:visibility="gone"
         android:textAlignment="center"
-        android:text="Time taken to train on PC - 47.4716ms. Time taken to test on PC was 1.95ms. Accuracy of Classifier is 98.9683%"/>
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mobileTitle"
+        android:text="Mobile Results:"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        android:layout_below="@+id/pcmetricsTV"
+        android:textColor="@color/colorPrimaryDark"
+        android:visibility="gone"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,15 +111,29 @@
         android:layout_marginTop="10dp"
         android:textSize="20sp"
         android:textColor="@color/colorPrimaryDark"
+        android:minLines="3"
         android:id="@+id/metricsTv"
-        android:layout_below="@+id/pcmetricsTV"/>
+        android:layout_below="@+id/mobileTitle"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The Original Video"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_below="@id/metricsTv"
+        android:id="@+id/videotitle"
+        />
     <VideoView
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:id="@+id/actualVideo"
+        android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
         android:visibility="gone"
-        android:layout_below="@+id/metricsTv"
+        android:layout_below="@+id/videotitle"
         />
 
 </RelativeLayout>
