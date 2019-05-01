@@ -1,14 +1,21 @@
 package com.cse535.aslclassifier;
 import android.Manifest;
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Environment;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.VideoView;
+
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 
@@ -19,33 +26,56 @@ import java.util.stream.IntStream;
 public class MainActivity extends AppCompatActivity {
     int PERMISSION_CODE = 1;
     int READ_REQUEST_CODE = 2;
+    String filesrc;
+    TextView metrics, result;
+    VideoView videoView;
+     ProgressDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-
         }
         else {
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSION_CODE);
         }
-        String filename = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
-        filename = filename + "/about.csv";
-        classifyFile(filename);
-        Log.e("NAME", filename);
+        Button fileButton = findViewById(R.id.fileButton);
+        fileButton.setOnClickListener(v -> performFileSearch());
+        metrics = findViewById(R.id.metricsTv);
+        result = findViewById(R.id.resultTV);
+        dialog = new ProgressDialog(MainActivity.this);
+
     }
 
     public void performFileSearch() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        //intent.setType("text/csv");
-        intent.setType("*/*");
+        intent.setType("text/csv");
+        //intent.setType("*/*");
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Uri content_describer = data.getData();
+            if (content_describer != null) {
+                filesrc = FileUtils.getRealPath(MainActivity.this, content_describer);
+                Log.e("Selected File", filesrc);
+                dialog.setTitle("Classifying");
+                dialog.setMessage("Loading....");
+                String resultVal = classifyFile(filesrc);
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                    metrics.setText(resultVal);
+                }
+            }
+        }
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (!(requestCode == PERMISSION_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
@@ -54,20 +84,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void classifyFile(String fileName) {
+    private String classifyFile(String fileName) {
         File csv = new File(fileName);
         try {
             CSVReader reader =  new CSVReaderBuilder(new FileReader(csv.getAbsolutePath())).build();
-
             long startTime = System.currentTimeMillis();
             int num_about = 0;
             int num_father = 0;
             int num_error = 0;
+            int num_rows = 0;
+            String about = "About";
+            String father = "Father";
             String[] row;
             row = reader.readNext();
-            // Skip first row
             row = reader.readNext();
             while( row != null) {
+                num_rows++;
                 float[] vals = cleanRow(row);
                 int result = classifyRow(vals);
                 if (result == 0) {
@@ -80,9 +112,24 @@ public class MainActivity extends AppCompatActivity {
                 row = reader.readNext();
             }
             long endTime = System.currentTimeMillis();
-            Log.e("Results", "The values are About: " + num_about + " Father: " + num_father + " Error: " + num_error + " Time is: " + (endTime - startTime) + "");
+            String decision = "Classification Result is : ";
+            float accuracy = 0.0f;
+            String aboutpath = "android.resource://" + getPackageName() + "/R.raw._about.mp4";
+            String fatherPath = "android.resource://" + getPackageName() + "/R.raw._father.mp4";
+            if (num_about  > num_father) {
+                decision = decision + about;
+                accuracy = ((float)num_about / num_rows) * 100;
+                videoView.setVideoURI(Uri.parse(aboutpath));
+            } else {
+                decision = decision + father;
+                accuracy = ((float)num_father / num_rows) * 100;
+                videoView.setVideoURI(Uri.parse(fatherPath));
+            }
+            result.setText(decision);
+            return "The accuracy of the calculation is : "  + accuracy + " and the prediction using Decision Tree took " + (endTime - startTime) + " ms";
         } catch (Exception e) {
             e.printStackTrace();
+            return "Error occured during Classification";
         }
     }
     private float[] cleanRow(String[] line) {
