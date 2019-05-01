@@ -131,12 +131,13 @@ public class MainActivity extends AppCompatActivity {
             int num_about = 0;
             int num_father = 0;
             int num_rows = 0;
+            int num_error = 0;
             String about = "About";
             String father = "Father";
             String[] row;
             row = reader.readNext();
             row = reader.readNext();
-            while( row != null) {
+            while(row != null) {
                 num_rows++;
                 float[] vals = cleanRow(row);
                 int result = classifyRow(vals);
@@ -144,6 +145,8 @@ public class MainActivity extends AppCompatActivity {
                     num_about ++;
                 } else if (result == 1) {
                     num_father ++;
+                } else {
+                    num_error ++;
                 }
                 row = reader.readNext();
             }
@@ -152,14 +155,15 @@ public class MainActivity extends AppCompatActivity {
             float accuracy = 0.0f;
             String aboutpath = "android.resource://" + getPackageName() + "/" + R.raw._about;
             String fatherPath = "android.resource://" + getPackageName() + "/" + R.raw._father;
-            if (num_about  > num_father) {
+            Log.e("Results", num_about + ", " + num_father + ", " + num_rows + ", " + num_error);
+            if (num_about >= num_father) {
                 decision = decision + about;
-                accuracy = ((float)num_about / num_rows) * 100;
+                accuracy = ((float) num_about / num_rows) * 100;
                 videoView.setVideoURI(Uri.parse(aboutpath));
                 Log.e("Path", aboutpath);
             } else {
                 decision = decision + father;
-                accuracy = ((float)num_father / num_rows) * 100;
+                accuracy = ((float) num_father / num_rows) * 100;
                 Log.e("Path", fatherPath);
                 videoView.setVideoURI(Uri.parse(fatherPath));
             }
@@ -173,14 +177,15 @@ public class MainActivity extends AppCompatActivity {
         return resultVal;
     }
     private float[] cleanRow(String[] line) {
-        int[] indexes = new int[] {4,5,7,8,10,11,13,14,16,17,19,20,22,23,25,26,28,29,31,32,34,35};
+        //4 5 7 8 10 11 13 14 16 17 19 20 22 23 25 26 28 29 31 32 34 35
+        int[] indexes = new int[] {3,4,6,7,9,10,12,13,15,16,18,19,21,22,24,25,27,28,30,31,33,34};
 
         float[] row = new float[indexes.length + 1];
         int i = 0;
         int j = 1;
         for (i = 0 ; i < line.length; i++) {
             int finalI = i;
-            boolean result =IntStream.of(indexes).anyMatch(x -> x == finalI);
+            boolean result = IntStream.of(indexes).anyMatch(x -> x == finalI);
             if (result) {
                 row[j] = Float.parseFloat(line[i]);
                 j++;
@@ -188,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return row;
     }
+
     private int classifyRow(float[] row) {
         if (row.length != 23) {
             return -1;
