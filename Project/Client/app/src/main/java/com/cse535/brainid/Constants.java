@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 import io.realm.Realm;
 
 class Constants {
-    static String fogServer = "http://10.208.63.13:8000";
-    static String cloudServer = "http://34.74.223.6:8000";
+    static String fogServer = "http://10.152.81.93:8000";
+    static String cloudServer = "http://35.196.131.42:8000";
 
     static AuthenticationHistory getAhObject(Realm realm) {
         AuthenticationHistory ah;

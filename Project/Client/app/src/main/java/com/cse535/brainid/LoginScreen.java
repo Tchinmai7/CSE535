@@ -53,7 +53,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
     TextView fogLatencyTV, serverChoiceTV;
     Spinner classifiername, fileName;
     public double accuracy = 0;
-    public double cloudLatency, fogLatency;
+    public double cloudLatency = Double.MAX_VALUE, fogLatency = Double.MAX_VALUE;
     String res = "";
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
@@ -151,7 +151,6 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                         ah.addFogLatency(fogLatency);
                         ah.addAuthAttempt();
                         boolean choice_of_server = useCloudServer(ah);
-
                         String server_url;
                         if (choice_of_server) {
                             Log.e("Register", "Using Cloud Server");
@@ -161,6 +160,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                             serverChoiceTV.setText("Choosing Cloud Server");
                         } else {
                             server_url = Constants.fogServer;
+                            Log.e("Register", "Using Fog Server");
                             ah.addNumFog();
                             choice = "Fog";
                             serverChoiceTV.setText("Choosing Fog Server");
@@ -192,6 +192,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                                     realm.beginTransaction();
                                     try {
                                         JSONObject jObject = new JSONObject(new String(responseBody));
+                                        Log.e("Login", jObject.toString());
                                         accuracy = jObject.getDouble("accuracy");
                                         authResult = jObject.getString("status");
                                     } catch (JSONException e) {
@@ -204,7 +205,7 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
                                     }
                                     double timer = System.currentTimeMillis() - startTimer;
                                     ah.addClassifier(classifiername.getSelectedItem().toString());
-                                    if ("cloud".equals(choice)) {
+                                    if ("Cloud".equals(choice)) {
                                         ah.addCloudExecutionTime(timer);
                                     } else {
                                         ah.addFogExecutionTime(timer);
@@ -253,13 +254,19 @@ public class LoginScreen extends Activity implements AdapterView.OnItemSelectedL
     }
 
     private boolean useCloudServer(AuthenticationHistory ah) {
-        if (cloudLatency <= Long.MAX_VALUE && fogLatency <= Long.MAX_VALUE) {
+
+        if (fogLatency == Double.MAX_VALUE) {
+            // Fog is Down, use cloud.
+            return true;
+        } else if (cloudLatency == Double.MAX_VALUE && fogLatency != Double.MAX_VALUE) {
+            return false;
+        }
+        else {
             // Both servers are up.
             Double cloud_avg = getAverage(ah.getCloudExecutionTimes());
             Double fog_avg = getAverage(ah.getFogExecutionTimes());
-            return (cloudLatency <= fogLatency) && (cloud_avg <= fog_avg);
+            return (cloudLatency <= fogLatency);//&& (cloud_avg <= fog_avg);
         }
-        return cloudLatency <= fogLatency;
     }
 
     public static double getAverage(List<Double> list) {

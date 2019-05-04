@@ -64,6 +64,14 @@ public class EnterScreen extends Activity {
         chart.setFitBars(true); // make the x-axis fit exactly all bars
         chart.invalidate(); // refresh
     }
+    private String ListToString(List<Double> values)  {
+        StringBuilder stringBuilder = new StringBuilder();
+        for(Double f: values) {
+            stringBuilder.append(f);
+            stringBuilder.append(",");
+        }
+        return stringBuilder.toString();
+    }
     private void chartLine(List<Double> values, LineChart chart, String title, TextView id) {
         if (values.size() == 0) {
             chart.setVisibility(View.GONE);
@@ -75,6 +83,7 @@ public class EnterScreen extends Activity {
            entries.add(new Entry(i.floatValue(),  v.floatValue()));
            i ++;
         }
+        Log.e(title, ListToString(values));
         LineDataSet dataSet = new LineDataSet(entries, title);
         LineData lineData = new LineData(dataSet);
         chart.getXAxis().setDrawGridLines(false);
